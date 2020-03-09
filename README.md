@@ -1,30 +1,16 @@
-smart-group-server
+smart-group-server-xl
 ==================
+
+## Our Vision
+To provide Smart Groups on every ircddb based network in order to offer a continuous experience to radio users.
+
 ## Introduction
 
-This smart-group-server is based on an original idea by John Hays K7VE for a routing group server he called **STARnet Digital**. This idea was first coded by Jonathan G4KLX and he called the resulting program **StarNetServer**. The smart-group-server is derrived from Jonathan's code and still contains his original copyrights and GPLV#2 license. This new implementation of a group routing server has many improvements and new features compared to its predecessor. The main features for the end-user is that Smart Groups allow a user to "listen first" before transmitting and also be able to see the status of the Smart Groups and users. The smart-group-server can now also handle connections from mobile clients (hotspots that get their internet connection from a cellphone). The most useful feature for provider is that a single smart-group-server can serve both DCS- **and** DExtra-linked groups and only the required UDP ports are created. In addtion, by using the remote control application, Smart Groups can be unlinked and linked dynamically, freeing and reallocating resources as required.  It was designed expressly for QuadNet. The smart-group-server interact with QuadNet using new IRC messages to provide additional information that will typically be display on the ROUTING GROUPS web page at openquad.net. The smart-group-server may not function proplerly on other IRCDDB networks.
+The original smart-group-server is based from G4KLX's original Starnet software by N7TAE. While it was written expressly for the Quadnet ircddb network this fork aims to provide an ircddb network agnostic smart group server. Since there are still dozens of repeaters out there not running on Quadnet but only on ircddb.net our vision is to offer a software allowing groups to ba avaialble from every network. Users should not be impaired by a balkanized system.
 
-### What's New
+** Original text from N7TAE **
+>“This smart-group-server is based on an original idea by John Hays K7VE for a routing group server he called **STARnet Digital**. This idea was first coded by Jonathan G4KLX and he called the resulting program **StarNetServer**. The smart-group-server is derrived from Jonathan's code and still contains his original copyrights and GPLV#2 license. This new implementation of a group routing server has many improvements and new features compared to its predecessor. The main features for the end-user is that Smart Groups allow a user to "listen first" before transmitting and also be able to see the status of the Smart Groups and users. The smart-group-server can now also handle connections from mobile clients (hotspots that get their internet connection from a cellphone). The most useful feature for provider is that a single smart-group-server can serve both DCS- **and** DExtra-linked groups and only the required UDP ports are created. In addtion, by using the remote control application, Smart Groups can be unlinked and linked dynamically, freeing and reallocating resources as required."
 
-* **V# 180407** A bug has been fixed where if you use the "LOGOFF in the text field" method of logging off a smart-group-server, the ROUTING GROUPS page was not being updated properly.
-
-* **V# 180401** In some situations, the smart-group-server does not "following" a user if he switches repeaters. It was clear that the *last repeater used* cache was not being updated properly. This has been fixed by cleaning up how the user cache is used in the CGroupHandler class.
-
-* **V# 180322** The smart-group-server is now compatible with mobile hotspots! You should be able to route to any Smart Group from a smart-phone-tethered hotspot. Thanks goes to Colby Ross, W1BSB for helping with this very important new capability!
-
-* **V# 180218** The CRepeaterHandler class has been removed from the project, along with the CDDDataHandler and DCCSHandler classes. A crash bug, where someone would try to link to a Smart Group module, has been fixed.
-
-* **V# 180205** There was a benign bug causing some linked groups not to properly receive polls from X-reflectors, causing these groups to do an unnecessary re-link at the end of each poll inactivity timer. This has been fixed. I introduced this bug when I did major modifications to the C-Handler, C-ProtocolHandler and C-ProtcolHandlerPool classes. The C-ProtocolHandlerPool classes now use a std::list to keep the C-ProtcolHandler instances, instead of a static array. I consider this release the first public release compareable to what some would call *Version 1.0.0*.
-
-* **V# 180203** A buffer overflow error has been fixed in CConnectData. I introduced this bug when replacing wxWidgets. (I wish the standard library had a format or sprint class method for std::string! It's probably the only thing that wxWidgets has over the C++11 standard library.) Now it's fixed.
-
-* **V# 180118** Smart Groups can now be linked and unlinked by the sgsremote program. See the README of my sgs-remote git repository. You need to unlink before you link and once you unlink a Smart Group you can link it to either an XRF or a DCS reflector. Also **the format of the configuration file has changed**. The callsign and address parameters have been moved from the ircddb section to a new section called gateway. See the example.cfg file for more information. Finally, the install section of the Makefile has been separated into two pieces, one to get the latest Host*.txt files and another to install the smart-group-server program and configuration files, see below.
-
-* **V# 180103** The smart-group-server now supports linking both DExtra and DCS reflectors to different channels *in the same server instance*. The compile time switches for DEXTRA_LINK and DCS_LINK are gone. If you need an unlinked channel, don't define a *reflector* parameter in the configuration.
-
-* **V# 180101** There is no hard limit on how many channels you can have running on a single smart-group-server. There is a practical limit. For instance, you could run out of ports for DExtra or DCS linking. There is also a performance limit when there are so many channels, servicing a single time slice takes longer than a D-Star frame. I don't know when this will happen. Resource allocation is much more efficient. DExtra and DCS resource are only allocated for the channels defined in the configuration file.
-
-* **Original Version** The underlying IRCDDB version has been upgraded to 2.0.0 and supports new IRC Messages that the smart-group-server uses to communicate the channel states to the Quadnet Servers. The dependancy on wxWidgets is gone!
 
 ## Server OS Requirements
 
