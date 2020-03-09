@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+#Generated source files
+/GitVersion.h
