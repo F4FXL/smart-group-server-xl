@@ -32,7 +32,7 @@ Also the Smart Group Server needs to have a unique callsign in QuadNet, one that
 
 These instructions are for a Debian-based OS. Begin by downloading this git repository:
 ```
-git clone git://github.com/n7tae/smart-group-server.git
+git clone git://github.com/F4FXL/smart-group-server-xl.git
 ```
 Install the only needed development library:
 ```
@@ -53,8 +53,3 @@ To install and start the smart-group-server, first type `make newhostfiles`. Thi
 sudo make install && sudo journalctl -u sgs.service -f
 ```
 This will allow you to view the smart-group-server log file while it's booting up. When you are satisfied it's running okay you can Control-C to end the journalctl session. To uninstall it, type `sudo make uninstall` and `sudo make removehostfiles`. This will stop the server and remove all files from /usr/local. You can then delete the build directory to remove every trace of the smart-group-server.
-
-73
-
-Tom
-n7tae (at) arrl (dot) net
