@@ -1,6 +1,6 @@
 # Copyright (c) 2017 by Thomas A. Early N7TAE
 
-# if you change these locations, make sure the sgs.service file is updated!
+# if you change these locations, make sure the sgs-xl.service file is updated!
 BINDIR=/usr/local/bin
 CFGDIR=/usr/local/etc
 
@@ -13,8 +13,8 @@ SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 
-sgs :  GitVersion.h $(OBJS)
-	g++ $(CPPFLAGS) -o sgs $(OBJS) -lconfig++ -pthread
+sgs-xl :  GitVersion.h $(OBJS)
+	g++ $(CPPFLAGS) -o sgs-xl $(OBJS) -lconfig++ -pthread
 
 %.o : %.cpp
 	g++ $(CPPFLAGS) -MMD -MD -c $< -o $@
@@ -22,7 +22,7 @@ sgs :  GitVersion.h $(OBJS)
 .PHONY: clean
 
 clean:
-	$(RM) GitVersion.h $(OBJS) $(DEPS) sgs
+	$(RM) GitVersion.h $(OBJS) $(DEPS) sgs-xl
 
 -include $(DEPS)
 
@@ -31,21 +31,21 @@ newhostfiles :
 	/usr/bin/wget http://www.pistar.uk/downloads/DExtra_Hosts.txt && sudo /bin/mv -f DExtra_Hosts.txt $(CFGDIR)
 	/usr/bin/wget http://www.pistar.uk/downloads/DCS_Hosts.txt && sudo /bin/mv -f DCS_Hosts.txt $(CFGDIR)
 
-install : sgs
-	/bin/cp -f sgs.cfg $(CFGDIR)
-	/bin/cp -f sgs $(BINDIR)
-	/bin/cp -f sgs.service /lib/systemd/system
-	systemctl enable sgs.service
+install : sgs-xl
+	/bin/cp -f sgs-xl.cfg $(CFGDIR)
+	/bin/cp -f sgs-xl $(BINDIR)
+	/bin/cp -f sgs-xl.service /lib/systemd/system
+	systemctl enable sgs-xl.service
 	systemctl daemon-reload
-	systemctl start sgs.service
+	systemctl start sgs-xl.service
 
 uninstall :
-	systemctl stop sgs.service
-	systemctl disable sgs.service
-	/bin/rm -f /lib/systemd/system/sgs.service
+	systemctl stop sgs-xl.service
+	systemctl disable sgs-xl.service
+	/bin/rm -f /lib/systemd/system/sgs-xl.service
 	systemctl daemon-reload
-	/bin/rm -f $(BINDIR)/sgs
-	/bin/rm -f $(CFGDIR)/sgs.cfg
+	/bin/rm -f $(BINDIR)/sgs-xl
+	/bin/rm -f $(CFGDIR)/sgs-xl.cfg
 
 removehostfiles :
 	/bin/rm -f $(CFGDIR)/DExtra_Hosts.txt
