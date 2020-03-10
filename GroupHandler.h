@@ -120,6 +120,7 @@ public:
 	static CGroupHandler *findGroup(const std::string &callsign);
 	static CGroupHandler *findGroup(const CHeaderData &header);
 	static CGroupHandler *findGroup(const CAMBEData &data);
+	static void findGroupsByLogoff(const CHeaderData &header, std::list<CGroupHandler*> & groups);
 
 	static void finalise();
 
