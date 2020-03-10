@@ -32,9 +32,11 @@ newhostfiles :
 	/usr/bin/wget http://www.pistar.uk/downloads/DCS_Hosts.txt && sudo /bin/mv -f DCS_Hosts.txt $(CFGDIR)
 
 install : sgs-xl
+	/bin/mkdir -p $(CFGDIR)
 	/bin/cp -f sgs-xl.cfg $(CFGDIR)
 	/bin/cp -f sgs-xl $(BINDIR)
 	/bin/cp -f sgs-xl.service /lib/systemd/system
+	/usr/bin/sed -i "s|REPLACEME|/usr/sbin/sgs-xl /etc/sgs-xl/sgs-xl.cfg|g" /lib/systemd/system/sgs-xl.service
 	systemctl enable sgs-xl.service
 	systemctl daemon-reload
 	systemctl start sgs-xl.service
@@ -45,7 +47,7 @@ uninstall :
 	/bin/rm -f /lib/systemd/system/sgs-xl.service
 	systemctl daemon-reload
 	/bin/rm -f $(BINDIR)/sgs-xl
-	/bin/rm -f $(CFGDIR)/sgs-xl.cfg
+	/bin/rm -rf $(CFGDIR)
 
 removehostfiles :
 	/bin/rm -f $(CFGDIR)/DExtra_Hosts.txt

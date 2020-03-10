@@ -1,10 +1,11 @@
 [Unit]
 Description=Smart Group Server
-After=systemd-user-session.service
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/sgs /usr/local/etc/sgs.cfg
+ExecStart=REPLACEME
 
 [Install]
 WantedBy=multi-user.target
