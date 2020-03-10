@@ -53,3 +53,7 @@ To install and start the smart-group-server, first type `make newhostfiles`. Thi
 sudo make install && sudo journalctl -u sgs.service -f
 ```
 This will allow you to view the smart-group-server log file while it's booting up. When you are satisfied it's running okay you can Control-C to end the journalctl session. To uninstall it, type `sudo make uninstall` and `sudo make removehostfiles`. This will stop the server and remove all files from /usr/local. You can then delete the build directory to remove every trace of the smart-group-server.
+
+## Whatsnew
+### 2020-03-10
+Groups can share same logoff thus users will be logged off at once from every group sharing the same logoff 
