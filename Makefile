@@ -20,7 +20,6 @@ sgs-xl :  GitVersion.h $(OBJS)
 	g++ $(CPPFLAGS) -MMD -MD -c $< -o $@
 
 .PHONY: clean
-
 clean:
 	$(RM) GitVersion.h $(OBJS) $(DEPS) sgs-xl
 
@@ -28,10 +27,11 @@ clean:
 
 # install, uninstall and removehostfiles need root priviledges
 newhostfiles :
-	/usr/bin/wget http://www.pistar.uk/downloads/DExtra_Hosts.txt && sudo /bin/mv -f DExtra_Hosts.txt $(CFGDIR)
-	/usr/bin/wget http://www.pistar.uk/downloads/DCS_Hosts.txt && sudo /bin/mv -f DCS_Hosts.txt $(CFGDIR)
+	/bin/mkdir -p $(CFGDIR)
+	/usr/bin/wget -O $(CFGDIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
+	/usr/bin/wget -O $(CFGDIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
 
-install : sgs-xl
+install : newhostfiles sgs-xl
 	/bin/mkdir -p $(CFGDIR)
 	/bin/cp -f sgs-xl.cfg $(CFGDIR)
 	/bin/cp -f sgs-xl $(BINDIR)
