@@ -30,10 +30,10 @@
 #include "Timer.h"
 #include "Defs.h"
 
-class CSGSThread {
+class CSGSXLThread {
 public:
-	CSGSThread(unsigned int countDExtra, unsigned int countDCS);
-	virtual ~CSGSThread();
+	CSGSXLThread(unsigned int countDExtra, unsigned int countDCS);
+	virtual ~CSGSXLThread();
 
 	virtual void setCallsign(const std::string& callsign);
 	virtual void setAddress(const std::string& address);

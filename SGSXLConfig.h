@@ -43,10 +43,10 @@ struct SircDDB {
 	bool isQuadNet;
 };
 
-class CSGSConfig {
+class CSGSXLConfig {
 public:
-	CSGSConfig(const std::string &pathname);
-	~CSGSConfig();
+	CSGSXLConfig(const std::string &pathname);
+	~CSGSXLConfig();
 
 	void getGateway(std::string &callsign, std::string &address) const;
 

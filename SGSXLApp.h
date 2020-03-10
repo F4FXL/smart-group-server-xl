@@ -19,18 +19,18 @@
 
 #pragma once
 
-#include "SGSThread.h"
+#include "SGSXLThread.h"
 
-class CSGSApp
+class CSGSXLApp
 {
 private:
 	std::string m_configFile;
-	CSGSThread *m_thread;
+	CSGSXLThread *m_thread;
 	bool createThread();
 
 public:
-	CSGSApp(const std::string &configFile);
-	~CSGSApp();
+	CSGSXLApp(const std::string &configFile);
+	~CSGSXLApp();
 
 	bool init();
 	void run();

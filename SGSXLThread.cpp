@@ -28,7 +28,7 @@
 #include <cstring>
 #include <cassert>
 
-#include "SGSThread.h"
+#include "SGSXLThread.h"
 #include "GroupHandler.h"
 #include "DExtraHandler.h"			// DEXTRA LINK
 #include "DCSHandler.h"				// DCS LINK
@@ -39,7 +39,7 @@
 
 const unsigned int REMOTE_DUMMY_PORT = 65015U;
 
-CSGSThread::CSGSThread(unsigned int countDExtra, unsigned int countDCS) :
+CSGSXLThread::CSGSXLThread(unsigned int countDExtra, unsigned int countDCS) :
 m_countDExtra(countDExtra),
 m_countDCS(countDCS),
 m_killed(false),
@@ -62,7 +62,7 @@ m_remote(NULL)
 	printf("SGSThread created. DExtra channels: %d, DCS Channels: %d\n", countDExtra, countDCS);
 }
 
-CSGSThread::~CSGSThread()
+CSGSXLThread::~CSGSXLThread()
 {
 	CHeaderData::finalise();
 	CG2Handler::finalise();
@@ -73,7 +73,7 @@ CSGSThread::~CSGSThread()
 	printf("SGSThread destroyed\n");
 }
 
-void CSGSThread::run()
+void CSGSXLThread::run()
 {
 	m_g2Handler = new CG2ProtocolHandler(G2_DV_PORT, m_address);
 	bool ret = m_g2Handler->open();
@@ -180,12 +180,12 @@ void CSGSThread::run()
 	}
 }
 
-void CSGSThread::kill()
+void CSGSXLThread::kill()
 {
 	m_killed = true;
 }
 
-void CSGSThread::setCallsign(const std::string& callsign)
+void CSGSXLThread::setCallsign(const std::string& callsign)
 {
 	if (!m_stopped)
 		return;
@@ -193,24 +193,24 @@ void CSGSThread::setCallsign(const std::string& callsign)
 	m_callsign = callsign;
 }
 
-void CSGSThread::setAddress(const std::string& address)
+void CSGSXLThread::setAddress(const std::string& address)
 {
 	m_address = address;
 }
 
-void CSGSThread::addGroup(const std::string& callsign, const std::string& logoff, const std::string& repeater, const std::string& infoText, const std::string& permanent, unsigned int userTimeout, CALLSIGN_SWITCH callsignSwitch, bool txMsgSwitch, const std::string& reflector)
+void CSGSXLThread::addGroup(const std::string& callsign, const std::string& logoff, const std::string& repeater, const std::string& infoText, const std::string& permanent, unsigned int userTimeout, CALLSIGN_SWITCH callsignSwitch, bool txMsgSwitch, const std::string& reflector)
 {
 	CGroupHandler::add(callsign, logoff, repeater, infoText, permanent, userTimeout, callsignSwitch, txMsgSwitch, reflector);
 }
 
-void CSGSThread::setIRC(CIRCDDB* irc)
+void CSGSXLThread::setIRC(CIRCDDB* irc)
 {
 	assert(irc != NULL);
 
 	m_irc = irc;
 }
 
-void CSGSThread::setRemote(bool enabled, const std::string& password, unsigned int port)
+void CSGSXLThread::setRemote(bool enabled, const std::string& password, unsigned int port)
 {
 	if (enabled) {
 		m_remoteEnabled  = true;
@@ -223,7 +223,7 @@ void CSGSThread::setRemote(bool enabled, const std::string& password, unsigned i
 	}
 }
 
-void CSGSThread::processIrcDDB()
+void CSGSXLThread::processIrcDDB()
 {
 	// Once per second
 	if (m_statusTimer.hasExpired()) {
@@ -313,7 +313,7 @@ void CSGSThread::processIrcDDB()
 	}
 }
 
-void CSGSThread::processDExtra(CDExtraProtocolHandlerPool *dextraPool)
+void CSGSXLThread::processDExtra(CDExtraProtocolHandlerPool *dextraPool)
 {
 	for (;;) {
 		DEXTRA_TYPE type = dextraPool->read();
@@ -362,7 +362,7 @@ void CSGSThread::processDExtra(CDExtraProtocolHandlerPool *dextraPool)
 	}
 }
 
-void CSGSThread::processDCS(CDCSProtocolHandlerPool *dcsPool)
+void CSGSXLThread::processDCS(CDCSProtocolHandlerPool *dcsPool)
 {
 	for (;;) {
 		DCS_TYPE type = dcsPool->read();
@@ -402,7 +402,7 @@ void CSGSThread::processDCS(CDCSProtocolHandlerPool *dcsPool)
 	}
 }
 
-void CSGSThread::processG2()
+void CSGSXLThread::processG2()
 {
 	for (;;) {
 		G2_TYPE type = m_g2Handler->read();
@@ -433,7 +433,7 @@ void CSGSThread::processG2()
 	}
 }
 
-void CSGSThread::loadReflectors(const std::string fname, DSTAR_PROTOCOL dstarProtocol)
+void CSGSXLThread::loadReflectors(const std::string fname, DSTAR_PROTOCOL dstarProtocol)
 {
 	std::string filepath(CFG_DIR);
 	filepath += std::string("/") + fname;

@@ -23,8 +23,8 @@
 #include <string>
 #include <iostream>
 
-#include "SGSConfig.h"
-#include "SGSApp.h"
+#include "SGSXLConfig.h"
+#include "SGSXLApp.h"
 #include "Version.h"
 #include "IRCDDBMultiClient.h"
 #include "IRCDDBClient.h"
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
 	std::string cfgFile(argv[1]);
 
-	CSGSApp gateway(cfgFile);
+	CSGSXLApp gateway(cfgFile);
 
 	if (!gateway.init()) {
 		return 1;
@@ -60,34 +60,34 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-CSGSApp::CSGSApp(const std::string &configFile) : m_configFile(configFile), m_thread(NULL)
+CSGSXLApp::CSGSXLApp(const std::string &configFile) : m_configFile(configFile), m_thread(NULL)
 {
 }
 
-CSGSApp::~CSGSApp()
+CSGSXLApp::~CSGSXLApp()
 {
 }
 
-bool CSGSApp::init()
+bool CSGSXLApp::init()
 {
 	return createThread();
 }
 
-void CSGSApp::run()
+void CSGSXLApp::run()
 {
 	m_thread->run();
 
 	printf("exiting\n");
 }
 
-bool CSGSApp::createThread()
+bool CSGSXLApp::createThread()
 {
 	printf("\nSmart Group Server Version %s (GitID #%.7s) Copyright (C) %s\n", VERSION.c_str(), gitversion, VENDOR_NAME.c_str());
 	printf("Smart Group Server comes with ABSOLUTELY NO WARRANTY; see the LICENSE for details.\n");
 	printf("This is free software, and you are welcome to distribute it\nunder certain conditions that are discussed in the LICENSE file.\n\n");
 
-	CSGSConfig config(m_configFile);
-	m_thread = new CSGSThread(config.getLinkCount("XRF"), config.getLinkCount("DCS"));
+	CSGSXLConfig config(m_configFile);
+	m_thread = new CSGSXLThread(config.getLinkCount("XRF"), config.getLinkCount("DCS"));
 
 	std::string CallSign, address;
 	config.getGateway(CallSign, address);

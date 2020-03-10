@@ -22,10 +22,10 @@
 #include <iostream>
 
 #include "Utils.h"
-#include "SGSConfig.h"
+#include "SGSXLConfig.h"
 
 
-CSGSConfig::CSGSConfig(const std::string &pathname)
+CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 {
 
 	if (pathname.size() < 1) {
@@ -217,7 +217,7 @@ CSGSConfig::CSGSConfig(const std::string &pathname)
 	}
 }
 
-CSGSConfig::~CSGSConfig()
+CSGSXLConfig::~CSGSXLConfig()
 {
 	while (m_module.size()) {
 		delete m_module.back();
@@ -230,17 +230,17 @@ CSGSConfig::~CSGSConfig()
 	}
 }
 
-unsigned int CSGSConfig::getModCount()
+unsigned int CSGSXLConfig::getModCount()
 {
 	return m_module.size();
 }
 
-unsigned int CSGSConfig::getIrcDDBCount()
+unsigned int CSGSXLConfig::getIrcDDBCount()
 {
 	return m_ircDDB.size();
 }
 
-unsigned int CSGSConfig::getLinkCount(const char *type)
+unsigned int CSGSXLConfig::getLinkCount(const char *type)
 {
 	unsigned int count = 0;
 	for (unsigned int i=0; i<getModCount(); i++)
@@ -249,7 +249,7 @@ unsigned int CSGSConfig::getLinkCount(const char *type)
 	return count;
 }
 
-bool CSGSConfig::get_value(const Config &cfg, const std::string &path, int &value, int min, int max, int default_value)
+bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, int &value, int min, int max, int default_value)
 {
 	if (cfg.lookupValue(path, value)) {
 		if (value < min || value > max)
@@ -259,14 +259,14 @@ bool CSGSConfig::get_value(const Config &cfg, const std::string &path, int &valu
 	return true;
 }
 
-bool CSGSConfig::get_value(const Config &cfg, const std::string &path, bool &value, bool default_value)
+bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, bool &value, bool default_value)
 {
 	if (! cfg.lookupValue(path, value))
 		value = default_value;
 	return true;
 }
 
-bool CSGSConfig::get_value(const Config &cfg, const std::string &path, std::string &value, int min, int max, const std::string &default_value)
+bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, std::string &value, int min, int max, const std::string &default_value)
 {
 	if (cfg.lookupValue(path, value)) {
 		int l = value.length();
@@ -279,13 +279,13 @@ bool CSGSConfig::get_value(const Config &cfg, const std::string &path, std::stri
 	return true;
 }
 
-void CSGSConfig::getGateway(std::string& callsign, std::string& address) const
+void CSGSXLConfig::getGateway(std::string& callsign, std::string& address) const
 {
 	callsign = m_callsign;
 	address  = m_address;
 }
 
-void CSGSConfig::getIrcDDB(unsigned int ircddb, std::string& hostname, std::string& username, std::string& password, bool &isQuadNet) const
+void CSGSXLConfig::getIrcDDB(unsigned int ircddb, std::string& hostname, std::string& username, std::string& password, bool &isQuadNet) const
 {
 	hostname  = m_ircDDB[ircddb]->hostname;
 	username  = m_ircDDB[ircddb]->username;
@@ -293,7 +293,7 @@ void CSGSConfig::getIrcDDB(unsigned int ircddb, std::string& hostname, std::stri
 	isQuadNet = m_ircDDB[ircddb]->isQuadNet;
 }
 
-void CSGSConfig::getGroup(unsigned int mod, std::string& band, std::string& callsign, std::string& logoff, std::string& info, std::string& permanent, unsigned int& userTimeout, CALLSIGN_SWITCH& callsignSwitch, bool& txMsgSwitch, std::string& reflector) const
+void CSGSXLConfig::getGroup(unsigned int mod, std::string& band, std::string& callsign, std::string& logoff, std::string& info, std::string& permanent, unsigned int& userTimeout, CALLSIGN_SWITCH& callsignSwitch, bool& txMsgSwitch, std::string& reflector) const
 {
 	band           = m_module[mod]->band;
 	callsign       = m_module[mod]->callsign;
@@ -306,7 +306,7 @@ void CSGSConfig::getGroup(unsigned int mod, std::string& band, std::string& call
 	reflector      = m_module[mod]->reflector;
 }
 
-void CSGSConfig::getRemote(bool& enabled, std::string& password, unsigned int& port) const
+void CSGSXLConfig::getRemote(bool& enabled, std::string& password, unsigned int& port) const
 {
 	enabled  = m_remoteEnabled;
 	password = m_remotePassword;
