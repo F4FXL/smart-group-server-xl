@@ -26,11 +26,13 @@ clean:
 -include $(DEPS)
 
 # install, uninstall and removehostfiles need root priviledges
+.PHONY: newhostfiles
 newhostfiles :
 	/bin/mkdir -p $(CFGDIR)
 	/usr/bin/wget -O $(CFGDIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
 	/usr/bin/wget -O $(CFGDIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
 
+.PHONY: install
 install : newhostfiles sgs-xl
 	/bin/mkdir -p $(CFGDIR)
 	/bin/cp -f sgs-xl.cfg $(CFGDIR)
@@ -41,6 +43,7 @@ install : newhostfiles sgs-xl
 	systemctl daemon-reload
 	systemctl start sgs-xl.service
 
+.PHONY: uninstall
 uninstall :
 	systemctl stop sgs-xl.service
 	systemctl disable sgs-xl.service
@@ -49,6 +52,7 @@ uninstall :
 	/bin/rm -f $(BINDIR)/sgs-xl
 	/bin/rm -rf $(CFGDIR)
 
+.PHONY: removehostfiles
 removehostfiles :
 	/bin/rm -f $(CFGDIR)/DExtra_Hosts.txt
 	/bin/rm -f $(CFGDIR)/DCS_Hosts.txt
