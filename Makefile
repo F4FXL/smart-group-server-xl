@@ -1,8 +1,8 @@
 # Copyright (c) 2017 by Thomas A. Early N7TAE
 
 # if you change these locations, make sure the sgs-xl.service file is updated!
-BINDIR=/usr/local/bin
-CFGDIR=/usr/local/etc
+BINDIR=/usr/sbin
+CFGDIR=/etc/sgs-xl
 
 # choose this if you want debugging help
 #CPPFLAGS=-g -ggdb -W -Wall -std=c++11 -DCFG_DIR=\"$(CFGDIR)\"
