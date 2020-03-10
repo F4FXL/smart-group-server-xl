@@ -11,6 +11,9 @@ The original smart-group-server is based from G4KLX's original Starnet software 
 ** Original text from N7TAE **
 >“This smart-group-server is based on an original idea by John Hays K7VE for a routing group server he called **STARnet Digital**. This idea was first coded by Jonathan G4KLX and he called the resulting program **StarNetServer**. The smart-group-server is derrived from Jonathan's code and still contains his original copyrights and GPLV#2 license. This new implementation of a group routing server has many improvements and new features compared to its predecessor. The main features for the end-user is that Smart Groups allow a user to "listen first" before transmitting and also be able to see the status of the Smart Groups and users. The smart-group-server can now also handle connections from mobile clients (hotspots that get their internet connection from a cellphone). The most useful feature for provider is that a single smart-group-server can serve both DCS- **and** DExtra-linked groups and only the required UDP ports are created. In addtion, by using the remote control application, Smart Groups can be unlinked and linked dynamically, freeing and reallocating resources as required."
 
+## Main Features
+* Several groups can share same logoff callsign. Loging off will log the user from all groups inone shot.
+* Mobile hotspots can be reached.
 
 ## Server OS Requirements
 
