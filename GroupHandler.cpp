@@ -222,10 +222,18 @@ CGroupHandler *CGroupHandler::findGroup(const CHeaderData &header)
 	for (auto it=m_Groups.begin(); it!=m_Groups.end(); it++) {
 		if (0 == (*it)->m_groupCallsign.compare(your))
 			return *it;
-		if (0 == (*it)->m_offCallsign.compare(your))
-			return *it;
 	}
 	return NULL;
+}
+
+void CGroupHandler::findGroupsByLogoff(const CHeaderData &header, std::list<CGroupHandler*> & groups)
+{
+	std::string your = header.getYourCall();
+
+	for (auto it=m_Groups.begin(); it!=m_Groups.end(); it++) {
+		if (0 == (*it)->m_offCallsign.compare(your))
+			groups.push_back(*it);
+	}
 }
 
 CGroupHandler *CGroupHandler::findGroup(const CAMBEData &data)

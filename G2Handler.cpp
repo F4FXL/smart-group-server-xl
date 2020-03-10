@@ -70,11 +70,22 @@ void CG2Handler::process(CHeaderData& header)
 		return;
 	}
 
+	std::list<CGroupHandler*> groups;
+
 	// Check to see if this is for Smart Group
-	CGroupHandler* handler = CGroupHandler::findGroup(header);
-	if (handler != NULL) {
-		handler->process(header);
-		return;
+	CGroupHandler* group = CGroupHandler::findGroup(header);//look first for login group
+	if(group != NULL) {
+		groups.push_back(group);
+	}
+	else {
+		CGroupHandler::findGroupsByLogoff(header, groups);//get all groups having a matching logoff
+	}
+
+	for(auto it = groups.begin();it != groups.end(); it++)
+	{	
+		if ((*it) != NULL) {
+			(*it)->process(header);
+		}
 	}
 }
 

@@ -28,17 +28,17 @@ clean:
 # install, uninstall and removehostfiles need root priviledges
 .PHONY: newhostfiles
 newhostfiles :
-	/bin/mkdir -p $(CFGDIR)
-	/usr/bin/wget -O $(CFGDIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
-	/usr/bin/wget -O $(CFGDIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
+	mkdir -p $(CFGDIR)
+	wget -O $(CFGDIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
+	wget -O $(CFGDIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
 
 .PHONY: install
 install : newhostfiles sgs-xl
-	/bin/mkdir -p $(CFGDIR)
-	/bin/cp -f sgs-xl.cfg $(CFGDIR)
-	/bin/cp -f sgs-xl $(BINDIR)
-	/bin/cp -f sgs-xl.service /lib/systemd/system
-	/usr/bin/sed -i "s|REPLACEME|/usr/sbin/sgs-xl /etc/sgs-xl/sgs-xl.cfg|g" /lib/systemd/system/sgs-xl.service
+	mkdir -p $(CFGDIR)
+	cp -f sgs-xl.cfg $(CFGDIR)
+	cp -f sgs-xl $(BINDIR)
+	cp -f sgs-xl.service /lib/systemd/system
+	sed -i "s|REPLACEME|/usr/sbin/sgs-xl /etc/sgs-xl/sgs-xl.cfg|g" /lib/systemd/system/sgs-xl.service
 	systemctl enable sgs-xl.service
 	systemctl daemon-reload
 	systemctl start sgs-xl.service
@@ -47,16 +47,17 @@ install : newhostfiles sgs-xl
 uninstall :
 	systemctl stop sgs-xl.service
 	systemctl disable sgs-xl.service
-	/bin/rm -f /lib/systemd/system/sgs-xl.service
+	rm -f /lib/systemd/system/sgs-xl.service
 	systemctl daemon-reload
-	/bin/rm -f $(BINDIR)/sgs-xl
-	/bin/rm -rf $(CFGDIR)
+	rm -f $(BINDIR)/sgs-xl
+	rm -rf $(CFGDIR)
 
 .PHONY: removehostfiles
 removehostfiles :
-	/bin/rm -f $(CFGDIR)/DExtra_Hosts.txt
-	/bin/rm -f $(CFGDIR)/DCS_Hosts.txt
+	rm -f $(CFGDIR)/DExtra_Hosts.txt
+	rm -f $(CFGDIR)/DCS_Hosts.txt
 
+.PHONY: GitVersion.h
 GitVersion.h: force
 ifneq ("$(wildcard .git/index)","")
 	echo "const char *gitversion = \"$(shell git rev-parse HEAD)\";" > $@
@@ -66,4 +67,3 @@ endif
 
 .PHONY: force
 force:
-	@true
