@@ -42,10 +42,10 @@ enum LOGUSER {
 	LU_OFF
 };
 
-class CSGSUser {
+class CSGSXLUser {
 public:
-	CSGSUser(const std::string& callsign, unsigned int timeout);
-	~CSGSUser();
+	CSGSXLUser(const std::string& callsign, unsigned int timeout);
+	~CSGSXLUser();
 
 	void reset();
 
@@ -60,10 +60,10 @@ private:
 	CTimer m_timer;
 };
 
-class CSGSId {
+class CSGSXLId {
 public:
-	CSGSId(unsigned int id, unsigned int timeout, CSGSUser* user);
-	~CSGSId();
+	CSGSXLId(unsigned int id, unsigned int timeout, CSGSXLUser* user);
+	~CSGSXLId();
 
 	unsigned int getId() const;
 
@@ -82,7 +82,7 @@ public:
 	bool isLogoff() const;
 	bool isEnd() const;
 
-	CSGSUser* getUser() const;
+	CSGSXLUser* getUser() const;
 
 	CTextCollector& getTextCollector();
 
@@ -93,7 +93,7 @@ private:
 	bool           m_info;
 	bool           m_logoff;
 	bool           m_end;
-	CSGSUser      *m_user;
+	CSGSXLUser      *m_user;
 	CTextCollector m_textCollector;
 };
 
@@ -185,8 +185,8 @@ private:
 	CALLSIGN_SWITCH  m_callsignSwitch;
 	bool             m_txMsgSwitch;
 
-	std::map<unsigned int, CSGSId *>      m_ids;
-	std::map<std::string, CSGSUser *>     m_users;
+	std::map<unsigned int, CSGSXLId *>      m_ids;
+	std::map<std::string, CSGSXLUser *>     m_users;
 	std::map<std::string, CSGSRepeater *> m_repeaters;
 
 	void sendFromText(const std::string &text) const;
