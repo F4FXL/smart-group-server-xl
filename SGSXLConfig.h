@@ -62,6 +62,8 @@ public:
 	unsigned int getLinkCount(const char *type);
 	unsigned int getIrcDDBCount();
 
+	bool hasErrors();
+
 private:
 	bool get_value(const Config &cfg, const std::string &path, int &value, int min, int max, int default_value);
 	bool get_value(const Config &cfg, const std::string &path, bool &value, bool default_value);
@@ -79,4 +81,6 @@ private:
 
 	bool m_audioEnabled;
 	std::string m_audioDirectory;
+
+	bool m_hasErrors;
 };

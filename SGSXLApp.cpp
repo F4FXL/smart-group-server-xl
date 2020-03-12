@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
 	if ('-' == argv[1][0]) {
 		printf("\nSmart Group Server Version %s (GitID #%.7s) Copyright (C) %s\n", VERSION.c_str(), gitversion, VENDOR_NAME.c_str());
-		printf("Smart Group Server comes with ABSOLUTELY NO WARRANTY; see the LICENSE for details.\n");
+		printf("Smart Group Server XL comes with ABSOLUTELY NO WARRANTY; see the LICENSE for details.\n");
 		printf("This is free software, and you are welcome to distribute it\nunder certain conditions that are discussed in the LICENSE file.\n\n");
 		return 0;
 	}
@@ -83,10 +83,15 @@ void CSGSXLApp::run()
 bool CSGSXLApp::createThread()
 {
 	printf("\nSmart Group Server Version %s (GitID #%.7s) Copyright (C) %s\n", VERSION.c_str(), gitversion, VENDOR_NAME.c_str());
-	printf("Smart Group Server comes with ABSOLUTELY NO WARRANTY; see the LICENSE for details.\n");
+	printf("Smart Group Server XL comes with ABSOLUTELY NO WARRANTY; see the LICENSE for details.\n");
 	printf("This is free software, and you are welcome to distribute it\nunder certain conditions that are discussed in the LICENSE file.\n\n");
 
 	CSGSXLConfig config(m_configFile);
+	if(config.hasErrors()) {
+		printf("Configuration has one or more errors. Aborting.\n");
+		return false;
+	}
+
 	m_thread = new CSGSXLThread(config.getLinkCount("XRF"), config.getLinkCount("DCS"));
 
 	std::string CallSign, address;

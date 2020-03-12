@@ -27,8 +27,10 @@
 
 CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 {
+	m_hasErrors = false;
 	if (pathname.size() < 1) {
 		printf("Configuration filename too short!\n");
+		m_hasErrors = true;
 		return;
 	}
 
@@ -38,17 +40,21 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 	}
 	catch(const FileIOException &fioex) {
 		printf("Can't read %s\n", pathname.c_str());
+		m_hasErrors = true;
 		return;
 	}
 	catch(const ParseException &pex) {
 		printf("Parse error at %s:%d - %s\n", pex.getFile(), pex.getLine(), pex.getError());
+		m_hasErrors = true;
 		return;
 	}
 
-	if (! get_value(cfg, "gateway.callsign", m_callsign, 3, 8, ""))
+	if (! get_value(cfg, "gateway.callsign", m_callsign, 3, 8, "")
+	    || 0 == m_callsign.size())	{
+		m_hasErrors = true;
+		printf("No Gateway callsign specified");
 		return;
-	if (0 == m_callsign.size())
-		return;
+	}
 	CUtils::ToUpper(m_callsign);
 	get_value(cfg, "gateway.address", m_address, 0, 20, "");
 	printf("GATEWAY: callsign='%s' address='%s'\n", m_callsign.c_str(), m_address.c_str());
@@ -220,9 +226,9 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 	get_value(cfg, "audio.directory", m_audioDirectory, 0, 2000, "");
 	m_audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
 	if(m_audioEnabled) {
-		printf("Audio enabled, auudio directory : %s", m_audioDirectory.c_str());
+		printf("Audio enabled, auudio directory : %s\n", m_audioDirectory.c_str());
 	} else {
-		printf("Audio disabled");
+		printf("Audio disabled\n");
 	}
 }
 
@@ -256,6 +262,11 @@ unsigned int CSGSXLConfig::getLinkCount(const char *type)
 		if (0 == m_module[i]->reflector.compare(0, 3, type))
 			count++;
 	return count;
+}
+
+bool CSGSXLConfig::hasErrors()
+{
+	return m_hasErrors;
 }
 
 bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, int &value, int min, int max, int default_value)
