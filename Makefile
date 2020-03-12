@@ -37,6 +37,8 @@ newhostfiles :
 .PHONY: install
 install : newhostfiles sgs-xl
 	mkdir -p $(CFGDIR)
+	mkdir -p $(DATADIR)
+	cp -rf data/* $(DATADIR)
 	cp -f sgs-xl.cfg $(CFGDIR)
 	cp -f sgs-xl $(BINDIR)
 	cp -f sgs-xl.service /lib/systemd/system
