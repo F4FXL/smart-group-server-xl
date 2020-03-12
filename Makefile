@@ -3,11 +3,12 @@
 # if you change these locations, make sure the sgs-xl.service file is updated!
 BINDIR=/usr/sbin
 CFGDIR=/etc/sgs-xl
+DATADIR=/etc/sgs-xl/data
 
 # choose this if you want debugging help
 #CPPFLAGS=-g -ggdb -W -Wall -std=c++11 -DCFG_DIR=\"$(CFGDIR)\"
 # or, you can choose this for a much smaller executable without debugging help
-CPPFLAGS=-W -Wall -std=c++11 -DCFG_DIR=\"$(CFGDIR)\"
+CPPFLAGS= -g -W -Wall -std=c++11 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
@@ -29,8 +30,9 @@ clean:
 .PHONY: newhostfiles
 newhostfiles :
 	mkdir -p $(CFGDIR)
-	wget -O $(CFGDIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
-	wget -O $(CFGDIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
+	mkdir -p $(DATADIR)
+	wget -O $(DATADIR)/DExtra_Hosts.txt http://www.pistar.uk/downloads/DExtra_Hosts.txt
+	wget -O $(DATADIR)/DCS_Hosts.txt http://www.pistar.uk/downloads/DCS_Hosts.txt
 
 .PHONY: install
 install : newhostfiles sgs-xl
@@ -51,11 +53,12 @@ uninstall :
 	systemctl daemon-reload
 	rm -f $(BINDIR)/sgs-xl
 	rm -rf $(CFGDIR)
+	rm -rf $(DATADIR)
 
 .PHONY: removehostfiles
 removehostfiles :
-	rm -f $(CFGDIR)/DExtra_Hosts.txt
-	rm -f $(CFGDIR)/DCS_Hosts.txt
+	rm -f $(DATADIR)/DExtra_Hosts.txt
+	rm -f $(DATADIR)/DCS_Hosts.txt
 
 .PHONY: GitVersion.h
 GitVersion.h: force

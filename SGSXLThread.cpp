@@ -435,7 +435,7 @@ void CSGSXLThread::processG2()
 
 void CSGSXLThread::loadReflectors(const std::string fname, DSTAR_PROTOCOL dstarProtocol)
 {
-	std::string filepath(CFG_DIR);
+	std::string filepath(DATA_DIR);
 	filepath += std::string("/") + fname;
 
 	struct stat sbuf;
