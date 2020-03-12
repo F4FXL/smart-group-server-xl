@@ -56,6 +56,8 @@ public:
 
 	void getRemote(bool &enabled, std::string &password, unsigned int &port) const;
 
+	void getAudio(bool & enabled, std::string &audioDir) const;
+
 	unsigned int getModCount();
 	unsigned int getLinkCount(const char *type);
 	unsigned int getIrcDDBCount();
@@ -74,5 +76,7 @@ private:
 	bool m_remoteEnabled;
 	std::string m_remotePassword;
 	unsigned int m_remotePort;
-}
-;
+
+	bool m_audioEnabled;
+	std::string m_audioDirectory;
+};

@@ -27,7 +27,6 @@
 
 CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 {
-
 	if (pathname.size() < 1) {
 		printf("Configuration filename too short!\n");
 		return;
@@ -159,7 +158,7 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 
 		key.str("");key.clear();
 		key << "module.[" << i << "].info";
-		get_value(cfg, key.str(), pmod->info, 0, 20, "Smart Group Server");
+		get_value(cfg, key.str(), pmod->info, 0, 20, "Smart Group Server XL");
 		if (pmod->info.size())
 			pmod->info.resize(20, ' ');
 
@@ -214,6 +213,16 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		m_remotePort = 0U;
 		m_remotePassword.empty();
 		printf("Remote disabled\n");
+	}
+
+	//audio
+	get_value(cfg, "audio.enabled", m_audioEnabled, true);
+	get_value(cfg, "audio.directory", m_audioDirectory, 0, 2000, "");
+	m_audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
+	if(m_audioEnabled) {
+		printf("Audio enabled, auudio directory : %s", m_audioDirectory.c_str());
+	} else {
+		printf("Audio disabled");
 	}
 }
 
