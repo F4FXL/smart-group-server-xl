@@ -351,15 +351,15 @@ CGroupHandler::~CGroupHandler()
 {
 	for (auto it = m_ids.begin(); it != m_ids.end(); it++)
 		delete it->second;
-	m_ids.empty();
+	m_ids.clear();
 
 	for (auto it = m_users.begin(); it != m_users.end(); ++it)
 		delete it->second;
-	m_users.empty();
+	m_users.clear();
 
 	for (auto it = m_repeaters.begin(); it != m_repeaters.end(); ++it)
 		delete it->second;
-	m_repeaters.empty();
+	m_repeaters.clear();
 	m_permanent.erase(m_permanent.begin(), m_permanent.end());
 }
 
