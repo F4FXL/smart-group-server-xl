@@ -225,14 +225,14 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 	//audio
 	get_value(cfg, "audio.enabled", m_audioEnabled, true);
 	get_value(cfg, "audio.directory", m_audioDirectory, 0, 2000, "");
-	m_audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
+	std::string audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
 
-	if(m_audioEnabled && !std::filesystem::exists(m_audioDirectory)) {
+	if(m_audioEnabled && !std::filesystem::exists(audioDirectory)) {
 		m_audioEnabled = false;
-		printf("Audio directory: %s does not exist\n", m_audioDirectory.c_str());
+		printf("Audio directory: %s does not exist\n", audioDirectory.c_str());
 	}
 	if(m_audioEnabled) {
-		printf("Audio enabled, auudio directory : %s\n", m_audioDirectory.c_str());
+		printf("Audio enabled, auudio directory : %s\n", audioDirectory.c_str());
 	} else {
 		printf("Audio disabled\n");
 	}
