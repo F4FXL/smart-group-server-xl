@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 
 #include "Utils.h"
 #include "SGSXLConfig.h"
@@ -116,7 +117,7 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 				CUtils::ToUpper(basename);
 			else {
 				printf("Malformed basename for module %d: '%s'\n", i, basename.c_str());
-				basename.empty();
+				basename.clear();
 			}
 		}
 
@@ -126,7 +127,7 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		CUtils::ToUpper(band);
 		if (! isalpha(band[0])) {
 			printf("Module %d band is not a letter\n", i);
-			basename.empty();
+			basename.clear();
 		}
 
 		key.str("");key.clear();
@@ -135,7 +136,7 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		CUtils::ToUpper(subscribe);
 		if (subscribe[0] != ' ' && ('A' > subscribe[0] || subscribe[0] > 'Z')) {
 			printf("subscribe suffix not space or letter\n");
-			basename.empty();
+			basename.clear();
 		}
 
 		key.str("");key.clear();
@@ -144,12 +145,12 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		CUtils::ToUpper(unsubscribe);
 		if ('A' > unsubscribe[0] || unsubscribe[0] > 'Z') {
 			printf("unsubscribe suffix not a letter\n");
-			basename.empty();
+			basename.clear();
 		}
 		if (! subscribe.compare(unsubscribe)) {
 			// subscribe and unsubscribe suffix needs to be different
 			printf("subscribe and unsubscribe for %s are identical\n", basename.c_str());
-			basename.empty();
+			basename.clear();
 		}
 		// skip to the next module definition
 		if (0 == basename.size())
@@ -193,9 +194,9 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		key << "module.[" << i << "].reflector";
 		if (! get_value(cfg, key.str(), basename, 8, 8, "")) {
 			printf("reflector %d must be undefined or exactly 8 chars!\n", i);
-			basename.empty();
+			basename.clear();
 		}
-		pmod->reflector.empty();
+		pmod->reflector.clear();
 		if (basename.size()) {
 			CUtils::ToUpper(basename);
 			if ( (0==basename.compare(0,3,"XRF") || 0==basename.compare(0,3,"DCS")) && isdigit(basename[3]) && isdigit(basename[4]) && isdigit(basename[5]) && ' '==basename[6] && isalpha(basename[7]) )
@@ -217,7 +218,7 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		printf("Remote enabled: password='%s', port=%d\n", m_remotePassword.c_str(), m_remotePort);
 	} else {
 		m_remotePort = 0U;
-		m_remotePassword.empty();
+		m_remotePassword.clear();
 		printf("Remote disabled\n");
 	}
 
@@ -225,6 +226,11 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 	get_value(cfg, "audio.enabled", m_audioEnabled, true);
 	get_value(cfg, "audio.directory", m_audioDirectory, 0, 2000, "");
 	m_audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
+
+	if(m_audioEnabled && !std::filesystem::exists(m_audioDirectory)) {
+		m_audioEnabled = false;
+		printf("Audio directory: %s does not exist\n", m_audioDirectory.c_str());
+	}
 	if(m_audioEnabled) {
 		printf("Audio enabled, auudio directory : %s\n", m_audioDirectory.c_str());
 	} else {
