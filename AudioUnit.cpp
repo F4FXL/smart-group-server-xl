@@ -428,6 +428,10 @@ void CAudioUnit::spellGroup(unsigned int id, const std::string& groupName, const
 {
 	for(auto it = groupName.begin(); it != groupName.end();it++)
 	{
+		if((*it) ==' ')
+		{
+			continue;
+		}
 		std::string cstr;
 		cstr.push_back(std::tolower((*it)));
 		lookup(id, cstr, destination);
