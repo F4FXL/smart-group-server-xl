@@ -23,7 +23,7 @@
 #include <map>
 #include <chrono>
 
-#include "RepeaterCallback.h"
+#include "G2ProtocolHandler.h"
 #include "SlowDataEncoder.h"
 #include "AMBEData.h"
 #include "Timer.h"
@@ -65,15 +65,23 @@ enum AUDIO_STATUS {
 	AS_TRANSMIT
 };
 
+enum ACK_TYPE
+{
+	AT_LOGIN,
+	AT_LOGOFF
+};
+
 class CAudioUnit {
 public:
-	CAudioUnit(IRepeaterCallback* handler, const std::string& callsign);
+	CAudioUnit(CG2ProtocolHandler* handler);
 	~CAudioUnit();
 
 	void sendStatus();
 
-	void setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
-	void setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
+	// void setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
+	// void setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
+
+	void setAck(ACK_TYPE ackType, const std::string& groupeName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination);
 
 	void cancel();
 
@@ -90,18 +98,23 @@ private:
 	static unsigned char* m_ambe;
 	static unsigned int   m_ambeLength;
 	static TEXT_LANG      m_language;
-
-	IRepeaterCallback* m_handler;
-	std::string        m_callsign;
+	CG2ProtocolHandler* m_handler;
+	//std::string        m_callsign;
 	CSlowDataEncoder   m_encoder;
 	AUDIO_STATUS       m_status;
-	LINK_STATUS        m_linkStatus;
-	LINK_STATUS        m_tempLinkStatus;
-	std::string        m_text;
-	std::string        m_tempText;
-	std::string        m_reflector;
-	std::string        m_tempReflector;
-	bool               m_hasTemporary;
+	ACK_TYPE           m_ackType;
+	std::string        m_groupName;
+	std::string        m_user;
+	std::string        m_repeater;
+	std::string        m_gateway;
+	in_addr			   m_destination;
+	// LINK_STATUS        m_linkStatus;
+	// LINK_STATUS        m_tempLinkStatus;
+	// std::string        m_text;
+	// std::string        m_tempText;
+	// std::string        m_reflector;
+	// std::string        m_tempReflector;
+	// bool               m_hasTemporary;
 	CTimer             m_timer;
 	CAMBEData**        m_data;
 	unsigned int       m_in;
@@ -109,9 +122,12 @@ private:
 	unsigned int       m_seqNo;
 	std::chrono::high_resolution_clock::time_point m_time;
 
-	bool lookup(unsigned int id, const std::string& name);
-	void spellReflector(unsigned int id, const std::string& reflector);
-	void sendStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
+	bool lookup(unsigned int id, const std::string& name, const in_addr& destination);
+	// void spellReflector(unsigned int id, const std::string& reflector);
+	// void sendStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
+
+	void sendAck(ACK_TYPE ackType, const std::string& groupeName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination);
+	void spellGroup(unsigned int id, const std::string& groupName, const in_addr& destination);
 
 	static bool readAMBE(const std::string& name);
 	static bool readIndex(const std::string& name);

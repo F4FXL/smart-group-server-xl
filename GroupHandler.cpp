@@ -302,6 +302,7 @@ m_linkGateway(),
 m_linkStatus(LS_NONE),
 m_oldlinkStatus(LS_INIT),
 m_linkTimer(1000U, NETWORK_TIMEOUT),
+m_audioUnit(NULL),
 m_id(0x00U),
 m_announceTimer(1000U, 2U * 60U),		// 2 minutes
 m_userTimeout(userTimeout),
@@ -823,6 +824,10 @@ bool CGroupHandler::linkInt()
 
 void CGroupHandler::clockInt(unsigned int ms)
 {
+	if(m_audioUnit != NULL)
+	{
+		m_audioUnit->clock(ms);
+	}
 	m_linkTimer.clock(ms);
 	if (m_linkTimer.isRunning() && m_linkTimer.hasExpired()) {
 		m_linkTimer.stop();
@@ -857,11 +862,12 @@ void CGroupHandler::clockInt(unsigned int ms)
 				CUserData* user = m_cache->findUser(callsign);
 				if (user) {
 					if (tx->isLogin()) {
-						sendAck(*user, "Logged in");
+						sendAck(*user, AT_LOGIN);
 					} else if (tx->isInfo()) {
-						sendAck(*user, m_infoText);
+						//TODO F4FXL 2020-03-15 Audio Info ?
+						//sendAck(*user, m_infoText);
 					} else if (tx->isLogoff()) {
-						sendAck(*user, "Logged off");
+						sendAck(*user, AT_LOGOFF);
 					}
 
 					delete user;
@@ -1051,48 +1057,54 @@ void CGroupHandler::sendFromText(const std::string &my) const
 	}
 }
 
-void CGroupHandler::sendAck(const CUserData &user, const std::string &text) const
+void CGroupHandler::sendAck(const CUserData &user, ACK_TYPE ackType)
 {
-	unsigned int id = CHeaderData::createId();
-
-	CHeaderData header(m_groupCallsign, "    ", user.getUser(), user.getGateway(), user.getRepeater());
-	header.setDestination(user.getAddress(), G2_DV_PORT);
-	header.setId(id);
-	m_g2Handler->writeHeader(header);
-
-	CSlowDataEncoder slowData;
-	slowData.setTextData(text);
-
-	CAMBEData data;
-	data.setId(id);
-	data.setDestination(user.getAddress(), G2_DV_PORT);
-
-	unsigned char buffer[DV_FRAME_MAX_LENGTH_BYTES];
-	::memcpy(buffer + 0U, NULL_AMBE_DATA_BYTES, VOICE_FRAME_LENGTH_BYTES);
-
-	for (unsigned int i = 0U; i < 20U; i++) {
-		if (i == 0U) {
-			// The first AMBE packet is a sync
-			::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, DATA_SYNC_BYTES, DATA_FRAME_LENGTH_BYTES);
-			data.setData(buffer, DV_FRAME_LENGTH_BYTES);
-			data.setSeq(i);
-		} else if (i == 19U) {
-			// The last packet of the ack
-			::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, END_PATTERN_BYTES, END_PATTERN_LENGTH_BYTES);
-			data.setData(buffer, DV_FRAME_MAX_LENGTH_BYTES);
-			data.setSeq(i);
-			data.setEnd(true);
-		} else {
-			// The packets containing the text data
-			unsigned char slowDataBuffer[DATA_FRAME_LENGTH_BYTES];
-			slowData.getTextData(slowDataBuffer);
-			::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, slowDataBuffer, DATA_FRAME_LENGTH_BYTES);
-			data.setData(buffer, DV_FRAME_LENGTH_BYTES);
-			data.setSeq(i);
-		}
-
-		m_g2Handler->writeAMBE(data);
+	if(m_audioUnit == NULL)
+	{
+		m_audioUnit = new CAudioUnit(m_g2Handler);
 	}
+	m_audioUnit->setAck(ackType, m_groupCallsign, user.getUser(), user.getRepeater(), user.getGateway(), user.getAddress());
+	m_audioUnit->sendStatus();
+	// unsigned int id = CHeaderData::createId();
+
+	// CHeaderData header(m_groupCallsign, "    ", user.getUser(), user.getGateway(), user.getRepeater());
+	// header.setDestination(user.getAddress(), G2_DV_PORT);
+	// header.setId(id);
+	// m_g2Handler->writeHeader(header);
+
+	// CSlowDataEncoder slowData;
+	// slowData.setTextData(text);
+
+	// CAMBEData data;
+	// data.setId(id);
+	// data.setDestination(user.getAddress(), G2_DV_PORT);
+
+	// unsigned char buffer[DV_FRAME_MAX_LENGTH_BYTES];
+	// ::memcpy(buffer + 0U, NULL_AMBE_DATA_BYTES, VOICE_FRAME_LENGTH_BYTES);
+
+	// for (unsigned int i = 0U; i < 20U; i++) {
+	// 	if (i == 0U) {
+	// 		// The first AMBE packet is a sync
+	// 		::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, DATA_SYNC_BYTES, DATA_FRAME_LENGTH_BYTES);
+	// 		data.setData(buffer, DV_FRAME_LENGTH_BYTES);
+	// 		data.setSeq(i);
+	// 	} else if (i == 19U) {
+	// 		// The last packet of the ack
+	// 		::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, END_PATTERN_BYTES, END_PATTERN_LENGTH_BYTES);
+	// 		data.setData(buffer, DV_FRAME_MAX_LENGTH_BYTES);
+	// 		data.setSeq(i);
+	// 		data.setEnd(true);
+	// 	} else {
+	// 		// The packets containing the text data
+	// 		unsigned char slowDataBuffer[DATA_FRAME_LENGTH_BYTES];
+	// 		slowData.getTextData(slowDataBuffer);
+	// 		::memcpy(buffer + VOICE_FRAME_LENGTH_BYTES, slowDataBuffer, DATA_FRAME_LENGTH_BYTES);
+	// 		data.setData(buffer, DV_FRAME_LENGTH_BYTES);
+	// 		data.setSeq(i);
+	// 	}
+
+	// 	m_g2Handler->writeAMBE(data);
+	// }
 }
 
 void CGroupHandler::linkUp(DSTAR_PROTOCOL, const std::string &callsign)

@@ -22,6 +22,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <stdio.h>
+#include <fstream>
+#include <cctype>
+#include <string>
 
 #include "DStarDefines.h"
 #include "HeaderData.h"
@@ -36,7 +39,7 @@ TEXT_LANG CAudioUnit::m_language = TL_ENGLISH_UK;
 
 const unsigned int MAX_FRAMES = 60U * DSTAR_FRAMES_PER_SEC;
 
-const unsigned int SILENCE_LENGTH = 10U;
+const unsigned int SILENCE_LENGTH = 10U;//Number of silence frames
 
 void CAudioUnit::initialise()
 {
@@ -114,18 +117,17 @@ void CAudioUnit::finalise()
 	delete[] m_ambe;
 }
 
-CAudioUnit::CAudioUnit(IRepeaterCallback* handler, const std::string& callsign) :
+CAudioUnit::CAudioUnit(CG2ProtocolHandler* handler) :
 m_handler(handler),
-m_callsign(callsign),
+// m_callsign(callsign),
 m_encoder(),
 m_status(AS_IDLE),
-m_linkStatus(LS_NONE),
-m_tempLinkStatus(LS_NONE),
-m_text(),
-m_tempText(),
-m_reflector(),
-m_tempReflector(),
-m_hasTemporary(false),
+m_ackType(AT_LOGIN),
+m_groupName(),
+m_user(),
+m_repeater(),
+m_gateway(),
+m_destination(),
 m_timer(1000U, REPLY_TIME),
 m_data(NULL),
 m_in(0U),
@@ -158,19 +160,29 @@ void CAudioUnit::sendStatus()
 	m_timer.start();
 }
 
-void CAudioUnit::setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
-{
-	m_linkStatus = status;
-	m_reflector  = reflector;
-	m_text       = text;
-}
+// void CAudioUnit::setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
+// {
+// 	m_linkStatus = status;
+// 	m_reflector  = reflector;
+// 	m_text       = text;
+// }
 
-void CAudioUnit::setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
+// void CAudioUnit::setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
+// {
+// 	m_tempLinkStatus = status;
+// 	m_tempReflector  = reflector;
+// 	m_tempText       = text;
+// 	m_hasTemporary   = true;
+// }
+
+void CAudioUnit::setAck(ACK_TYPE ackType, const std::string& groupName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination)
 {
-	m_tempLinkStatus = status;
-	m_tempReflector  = reflector;
-	m_tempText       = text;
-	m_hasTemporary   = true;
+	m_ackType = ackType;
+	m_groupName = groupName;
+	m_user = user;
+	m_repeater = repeater;
+	m_gateway = gateway;
+	m_destination = destination;
 }
 
 void CAudioUnit::clock(unsigned int ms)
@@ -178,12 +190,8 @@ void CAudioUnit::clock(unsigned int ms)
 	m_timer.clock(ms);
 
 	if (m_status == AS_WAIT && m_timer.hasExpired()) {
-		if (m_hasTemporary) {
-			sendStatus(m_tempLinkStatus, m_tempReflector, m_tempText);
-			m_hasTemporary = false;
-		} else {
-			sendStatus(m_linkStatus, m_reflector, m_text);
-		}
+
+		sendAck(m_ackType, m_groupName, m_user, m_repeater, m_gateway, m_destination);
 
 		m_timer.stop();
 
@@ -209,7 +217,7 @@ void CAudioUnit::clock(unsigned int ms)
 			if (m_in == m_out)
 				data->setEnd(true);
 
-			m_handler->process(*data, DIR_INCOMING, AS_INFO);
+			m_handler->writeAMBE(*data);
 
 			delete data;
 
@@ -242,7 +250,7 @@ void CAudioUnit::cancel()
 	m_timer.stop();
 }
 
-bool CAudioUnit::lookup(unsigned int id, const std::string &name)
+bool CAudioUnit::lookup(unsigned int id, const std::string &name, const in_addr& destination)
 {
 	CIndexRecord* info = m_index[name];
 	if (info == NULL) {
@@ -259,6 +267,7 @@ bool CAudioUnit::lookup(unsigned int id, const std::string &name)
 		CAMBEData* dataOut = new CAMBEData;
 		dataOut->setSeq(m_seqNo);
 		dataOut->setId(id);
+		dataOut->setDestination(destination, G2_DV_PORT);
 
 		unsigned char buffer[DV_FRAME_LENGTH_BYTES];
 		memcpy(buffer + 0U, dataIn, VOICE_FRAME_LENGTH_BYTES);
@@ -284,48 +293,48 @@ bool CAudioUnit::lookup(unsigned int id, const std::string &name)
 	return true;
 }
 
-void CAudioUnit::spellReflector(unsigned int id, const std::string &reflector)
-{
-	unsigned int length = reflector.size();
+// void CAudioUnit::spellReflector(unsigned int id, const std::string &reflector)
+// {
+// 	unsigned int length = reflector.size();
 
-	for (unsigned int i = 0; i < (length - 1); i++) {
-		std::string c = reflector.substr(i, 1);
+// 	for (unsigned int i = 0; i < (length - 1); i++) {
+// 		std::string c = reflector.substr(i, 1);
 
-		if (c.compare(" "))
-			lookup(id, c);
-	}
+// 		if (c.compare(" "))
+// 			lookup(id, c);
+// 	}
 
-	char c = reflector.at(length - 1);
+// 	char c = reflector.at(length - 1);
 
-	if (c == ' ')
-		return;
+// 	if (c == ' ')
+// 		return;
 
-	std::string cstr;
-	cstr.push_back(c);
-	if (m_linkStatus == LS_LINKING_DCS || m_linkStatus == LS_LINKED_DCS ||
-	    m_linkStatus == LS_LINKING_CCS || m_linkStatus == LS_LINKED_CCS) {
-		lookup(id, cstr);
-		return;
-	}
+// 	std::string cstr;
+// 	cstr.push_back(c);
+// 	if (m_linkStatus == LS_LINKING_DCS || m_linkStatus == LS_LINKED_DCS ||
+// 	    m_linkStatus == LS_LINKING_CCS || m_linkStatus == LS_LINKED_CCS) {
+// 		lookup(id, cstr);
+// 		return;
+// 	}
 
-	switch (c) {
-		case 'A':
-			lookup(id, "alpha");
-			break;
-		case 'B':
-			lookup(id, "bravo");
-			break;
-		case 'C':
-			lookup(id, "charlie");
-			break;
-		case 'D':
-			lookup(id, "delta");
-			break;
-		default:
-			lookup(id, cstr);
-			break;
-	}
-}
+// 	switch (c) {
+// 		case 'A':
+// 			lookup(id, "alpha");
+// 			break;
+// 		case 'B':
+// 			lookup(id, "bravo");
+// 			break;
+// 		case 'C':
+// 			lookup(id, "charlie");
+// 			break;
+// 		case 'D':
+// 			lookup(id, "delta");
+// 			break;
+// 		default:
+// 			lookup(id, cstr);
+// 			break;
+// 	}
+// }
 
 bool CAudioUnit::readAMBE(const std::string& name)
 {
@@ -355,7 +364,7 @@ bool CAudioUnit::readAMBE(const std::string& name)
 
 	unsigned char buffer[VOICE_FRAME_LENGTH_BYTES];
 
-	size_t n = fread(buffer, 4, 1, file);
+	size_t n = fread(buffer, 1, 4, file);
 	if (n != 4) {
 		printf("Unable to read the header from %s\n", fileName.c_str());
 		fclose(file);
@@ -368,19 +377,19 @@ bool CAudioUnit::readAMBE(const std::string& name)
 		return false;
 	}
 
-	// Length of the file minus the header
+	// Length of the file minus the header length
 	unsigned int length = fsize - 4U;
 
-	// Hold the file data plus silence at the end
+	// Hold the file data plus silence at the beginning
 	m_ambe = new unsigned char[length + SILENCE_LENGTH * VOICE_FRAME_LENGTH_BYTES];
-	m_ambeLength = length / VOICE_FRAME_LENGTH_BYTES;
+	m_ambeLength = (SILENCE_LENGTH + length) / VOICE_FRAME_LENGTH_BYTES;
 
 	// Add silence to the beginning of the buffer
 	unsigned char* p = m_ambe;
 	for (unsigned int i = 0U; i < SILENCE_LENGTH; i++, p += VOICE_FRAME_LENGTH_BYTES)
 		memcpy(p, NULL_AMBE_DATA_BYTES, VOICE_FRAME_LENGTH_BYTES);
 
-	n = fread(p, length, 1, file);
+	n = fread(p, 1, length, file);
 	if (n != length) {
 		printf("Unable to read the AMBE data from %s\n", fileName.c_str());
 		fclose(file);
@@ -411,8 +420,8 @@ bool CAudioUnit::readIndex(const std::string& name)
 		}
 	}
 
-	FILE *file = fopen(fileName.c_str(), "r");
-	if (NULL == file) {
+	std::ifstream file(fileName);
+	if (!file.is_open()) {
 		printf("Cannot open %s for reading\n", fileName.c_str());
 		return false;
 	}
@@ -422,14 +431,18 @@ bool CAudioUnit::readIndex(const std::string& name)
 
 	printf("Reading %s\n", fileName.c_str());
 
-	char line[128];
-	while (fgets(line, 128, file)) {
+	std::string line;
+	while (std::getline(file, line)) {
 
-		if (strlen(line) && '#'!=line[0]) {
+		if (!line.empty() && '#'!=line[0]) {
+			//ToDo F4FXL 2020-03-14 clean this up
+			char linec[128];
+			strcpy(linec, line.c_str());
 			const std::string space(" \t\r\n");
-			std::string name(strtok(line, space.c_str()));
+			std::string name(strtok(linec, space.c_str()));
 			std::string strt(strtok(NULL, space.c_str()));
 			std::string leng(strtok(NULL, space.c_str()));
+			///End ToDo
 
 			if (name.size() && strt.size() && leng.size()) {
 				unsigned long start  = std::stoul(strt);
@@ -443,62 +456,102 @@ bool CAudioUnit::readIndex(const std::string& name)
 		}
 	}
 
-	fclose(file);
-
 	return true;
 }
 
-void CAudioUnit::sendStatus(LINK_STATUS status, const std::string& reflector, const std::string &text)
+void CAudioUnit::sendAck(ACK_TYPE ackType, const std::string& groupName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination)
 {
-		m_encoder.setTextData(text);
+	unsigned int id = CHeaderData::createId();
 
-		// Create the message
-		unsigned int id = CHeaderData::createId();
+	CHeaderData header(groupName, "    ", user, gateway, repeater);
+	header.setDestination(destination, G2_DV_PORT);
+	header.setId(id);
 
-		lookup(id, " ");
-		lookup(id, " ");
-		lookup(id, " ");
-		lookup(id, " ");
+	lookup(id, " ", destination);
 
-		bool found;
+	switch (ackType)
+	{
+	case AT_LOGIN:
+		m_encoder.setTextData("Logged in");
+		lookup(id, "logged-in", destination);
+		break;
+	case AT_LOGOFF:
+		m_encoder.setTextData("Logged in");
+		lookup(id, "logged-off", destination);
+		break;
+	default:
+		m_encoder.setTextData("Doh !");
+		break;
+	}
 
-		switch (status) {
-			case LS_NONE:
-				lookup(id, "notlinked");
-				break;
-			case LS_LINKED_CCS:
-			case LS_LINKED_DCS:
-//			case LS_LINKED_DPLUS:
-			case LS_LINKED_DEXTRA:
-			case LS_LINKED_LOOPBACK:
-				found = lookup(id, "linkedto");
-				if (!found) {
-					lookup(id, "linked");
-					lookup(id, "2");
-				}
-				spellReflector(id, reflector);
-				break;
-			default:
-				found = lookup(id, "linkingto");
-				if (!found) {
-					lookup(id, "linking");
-					lookup(id, "2");
-				}
-				spellReflector(id, reflector);
-				break;
-		}
+	lookup(id, " ", destination);
 
-		lookup(id, " ");
-		lookup(id, " ");
-		lookup(id, " ");
-		lookup(id, " ");
+	spellGroup(id, groupName, destination);
 
-		// RPT1 and RPT2 will be filled in later
-		CHeaderData header;
-		header.setMyCall1(m_callsign);
-		header.setMyCall2("INFO");
-		header.setYourCall("CQCQCQ  ");
-		header.setId(id);
-
-		m_handler->process(header, DIR_INCOMING, AS_INFO);
+	m_handler->writeHeader(header);
 }
+
+void CAudioUnit::spellGroup(unsigned int id, const std::string& groupName, const in_addr& destination)
+{
+	for(auto it = groupName.begin(); it != groupName.end();it++)
+	{
+		std::string cstr;
+		cstr.push_back(std::tolower((*it)));
+		lookup(id, cstr, destination);
+	}
+}
+
+// void CAudioUnit::sendStatus(LINK_STATUS status, const std::string& reflector, const std::string &text)
+// {
+// 		m_encoder.setTextData(text);
+
+// 		// Create the message
+// 		unsigned int id = CHeaderData::createId();
+
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+
+// 		bool found;
+
+// 		switch (status) {
+// 			case LS_NONE:
+// 				lookup(id, "notlinked");
+// 				break;
+// 			case LS_LINKED_CCS:
+// 			case LS_LINKED_DCS:
+// //			case LS_LINKED_DPLUS:
+// 			case LS_LINKED_DEXTRA:
+// 			case LS_LINKED_LOOPBACK:
+// 				found = lookup(id, "linkedto");
+// 				if (!found) {
+// 					lookup(id, "linked");
+// 					lookup(id, "2");
+// 				}
+// 				spellReflector(id, reflector);
+// 				break;
+// 			default:
+// 				found = lookup(id, "linkingto");
+// 				if (!found) {
+// 					lookup(id, "linking");
+// 					lookup(id, "2");
+// 				}
+// 				spellReflector(id, reflector);
+// 				break;
+// 		}
+
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+// 		lookup(id, " ");
+
+// 		// RPT1 and RPT2 will be filled in later
+// 		CHeaderData header;
+// 		header.setMyCall1(m_callsign);
+// 		header.setMyCall2("INFO");
+// 		header.setYourCall("CQCQCQ  ");
+// 		header.setId(id);
+
+// 		m_handler->process(header, DIR_INCOMING, AS_INFO);
+// }

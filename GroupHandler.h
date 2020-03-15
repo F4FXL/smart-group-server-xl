@@ -36,6 +36,7 @@
 #include "AMBEData.h"
 #include "IRCDDB.h"
 #include "Timer.h"
+#include "AudioUnit.h"
 
 enum LOGUSER {
 	LU_ON,
@@ -93,7 +94,7 @@ private:
 	bool           m_info;
 	bool           m_logoff;
 	bool           m_end;
-	CSGSXLUser      *m_user;
+	CSGSXLUser     *m_user;
 	CTextCollector m_textCollector;
 };
 
@@ -105,7 +106,8 @@ public:
 	in_addr            m_address;
 };
 
-class CGroupHandler : public IReflectorCallback {
+class CGroupHandler : public IReflectorCallback, IRepeaterCallback
+{
 public:
 	static void add(const std::string &callsign, const std::string &logoff, const std::string &repeater, const std::string &infoText, const std::string &permanent,
 										unsigned int userTimeout, CALLSIGN_SWITCH callsignSwitch, bool txMsgSwitch, const std::string & eflector);
@@ -179,6 +181,8 @@ private:
 	CTimer         m_linkTimer;
 	DSTAR_LINKTYPE m_linkType;
 
+	CAudioUnit	   *m_audioUnit;
+
 	unsigned int   m_id;
 	CTimer         m_announceTimer;
 	unsigned int   m_userTimeout;
@@ -192,6 +196,6 @@ private:
 	void sendFromText(const std::string &text) const;
 	void sendToRepeaters(CHeaderData &header) const;
 	void sendToRepeaters(CAMBEData &data) const;
-	void sendAck(const CUserData &user, const std::string &text) const;
+	void sendAck(const CUserData &user, ACK_TYPE ackType);
 	void logUser(LOGUSER lu, const std::string channel, const std::string user);
 };
