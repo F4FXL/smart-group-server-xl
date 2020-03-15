@@ -16,6 +16,7 @@ The original smart-group-server is based from N7TAE original Starnet software by
 * Several groups can share same logoff callsign. Loging off will log the user from all groups inone shot.
 * Mobile hotspots can be reached.
 * Quadnet Smart Group reporting is supported
+* Sends audio login logoff messages
 
 ## Server OS Requirements
 
@@ -38,7 +39,7 @@ git clone git://github.com/F4FXL/smart-group-server-xl.git
 ```
 Install the only needed development library:
 ```
-sudo apt-get install libconfig++-dev
+sudo apt-get install build-essential libconfig++-dev
 ```
 Change to the smart-group-server directory and type `make`. This should make the executable, `sgs-xl` without errors or warnings. By default, you will have a group server that can link groups to X-Reflectors or DCS-Reflectors. Of course you can declare an unlinked channel by simply not defining a *reflector* parameter for that channel.
 
@@ -59,4 +60,5 @@ This will allow you to view the smart-group-server log file while it's booting u
 ## Whatsnew
 ### v1.0
 #### 2020-03-10
-Groups can share same logoff thus users will be logged off at once from every group sharing the same logoff 
+Groups can share same logoff. Thus users will be logged off at once from every group sharing the same logoff
+Loging in and off now sends an audio message
