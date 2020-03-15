@@ -60,7 +60,7 @@ m_remote(NULL)
 {
 	CHeaderData::initialise();
 	CG2Handler::initialise(0);
-	printf("SGSThread created. DExtra channels: %d, DCS Channels: %d\n", countDExtra, countDCS);
+	printf("SGSXLThread created. DExtra channels: %d, DCS Channels: %d\n", countDExtra, countDCS);
 }
 
 CSGSXLThread::~CSGSXLThread()
@@ -71,7 +71,7 @@ CSGSXLThread::~CSGSXLThread()
 	CDExtraHandler::finalise();
 	CDCSHandler::finalise();
 
-	printf("SGSThread destroyed\n");
+	printf("SGSXLThread destroyed\n");
 }
 
 void CSGSXLThread::run()
