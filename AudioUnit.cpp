@@ -476,7 +476,7 @@ void CAudioUnit::sendAck(ACK_TYPE ackType, const std::string& groupName, const s
 		lookup(id, "logged-in", destination);
 		break;
 	case AT_LOGOFF:
-		m_encoder.setTextData("Logged in");
+		m_encoder.setTextData("Logged off");
 		lookup(id, "logged-off", destination);
 		break;
 	default:
@@ -487,6 +487,8 @@ void CAudioUnit::sendAck(ACK_TYPE ackType, const std::string& groupName, const s
 	lookup(id, " ", destination);
 
 	spellGroup(id, groupName, destination);
+
+	lookup(id, " ", destination);
 
 	m_handler->writeHeader(header);
 }
