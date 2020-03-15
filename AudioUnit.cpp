@@ -148,7 +148,7 @@ CAudioUnit::~CAudioUnit()
 	delete[] m_data;
 }
 
-void CAudioUnit::sendStatus()
+void CAudioUnit::sendAck()
 {
 	if (m_ambe == NULL)
 		return;
@@ -159,21 +159,6 @@ void CAudioUnit::sendStatus()
 	m_status = AS_WAIT;
 	m_timer.start();
 }
-
-// void CAudioUnit::setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
-// {
-// 	m_linkStatus = status;
-// 	m_reflector  = reflector;
-// 	m_text       = text;
-// }
-
-// void CAudioUnit::setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text)
-// {
-// 	m_tempLinkStatus = status;
-// 	m_tempReflector  = reflector;
-// 	m_tempText       = text;
-// 	m_hasTemporary   = true;
-// }
 
 void CAudioUnit::setAck(ACK_TYPE ackType, const std::string& groupName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination)
 {
@@ -292,49 +277,6 @@ bool CAudioUnit::lookup(unsigned int id, const std::string &name, const in_addr&
 
 	return true;
 }
-
-// void CAudioUnit::spellReflector(unsigned int id, const std::string &reflector)
-// {
-// 	unsigned int length = reflector.size();
-
-// 	for (unsigned int i = 0; i < (length - 1); i++) {
-// 		std::string c = reflector.substr(i, 1);
-
-// 		if (c.compare(" "))
-// 			lookup(id, c);
-// 	}
-
-// 	char c = reflector.at(length - 1);
-
-// 	if (c == ' ')
-// 		return;
-
-// 	std::string cstr;
-// 	cstr.push_back(c);
-// 	if (m_linkStatus == LS_LINKING_DCS || m_linkStatus == LS_LINKED_DCS ||
-// 	    m_linkStatus == LS_LINKING_CCS || m_linkStatus == LS_LINKED_CCS) {
-// 		lookup(id, cstr);
-// 		return;
-// 	}
-
-// 	switch (c) {
-// 		case 'A':
-// 			lookup(id, "alpha");
-// 			break;
-// 		case 'B':
-// 			lookup(id, "bravo");
-// 			break;
-// 		case 'C':
-// 			lookup(id, "charlie");
-// 			break;
-// 		case 'D':
-// 			lookup(id, "delta");
-// 			break;
-// 		default:
-// 			lookup(id, cstr);
-// 			break;
-// 	}
-// }
 
 bool CAudioUnit::readAMBE(const std::string& name)
 {
@@ -491,58 +433,3 @@ void CAudioUnit::spellGroup(unsigned int id, const std::string& groupName, const
 		lookup(id, cstr, destination);
 	}
 }
-
-// void CAudioUnit::sendStatus(LINK_STATUS status, const std::string& reflector, const std::string &text)
-// {
-// 		m_encoder.setTextData(text);
-
-// 		// Create the message
-// 		unsigned int id = CHeaderData::createId();
-
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-
-// 		bool found;
-
-// 		switch (status) {
-// 			case LS_NONE:
-// 				lookup(id, "notlinked");
-// 				break;
-// 			case LS_LINKED_CCS:
-// 			case LS_LINKED_DCS:
-// //			case LS_LINKED_DPLUS:
-// 			case LS_LINKED_DEXTRA:
-// 			case LS_LINKED_LOOPBACK:
-// 				found = lookup(id, "linkedto");
-// 				if (!found) {
-// 					lookup(id, "linked");
-// 					lookup(id, "2");
-// 				}
-// 				spellReflector(id, reflector);
-// 				break;
-// 			default:
-// 				found = lookup(id, "linkingto");
-// 				if (!found) {
-// 					lookup(id, "linking");
-// 					lookup(id, "2");
-// 				}
-// 				spellReflector(id, reflector);
-// 				break;
-// 		}
-
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-// 		lookup(id, " ");
-
-// 		// RPT1 and RPT2 will be filled in later
-// 		CHeaderData header;
-// 		header.setMyCall1(m_callsign);
-// 		header.setMyCall2("INFO");
-// 		header.setYourCall("CQCQCQ  ");
-// 		header.setId(id);
-
-// 		m_handler->process(header, DIR_INCOMING, AS_INFO);
-// }

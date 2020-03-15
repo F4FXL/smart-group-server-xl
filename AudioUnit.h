@@ -76,7 +76,7 @@ public:
 	CAudioUnit(CG2ProtocolHandler* handler);
 	~CAudioUnit();
 
-	void sendStatus();
+	void sendAck();
 
 	// void setStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
 	// void setTempStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
@@ -99,7 +99,6 @@ private:
 	static unsigned int   m_ambeLength;
 	static TEXT_LANG      m_language;
 	CG2ProtocolHandler* m_handler;
-	//std::string        m_callsign;
 	CSlowDataEncoder   m_encoder;
 	AUDIO_STATUS       m_status;
 	ACK_TYPE           m_ackType;
@@ -108,13 +107,6 @@ private:
 	std::string        m_repeater;
 	std::string        m_gateway;
 	in_addr			   m_destination;
-	// LINK_STATUS        m_linkStatus;
-	// LINK_STATUS        m_tempLinkStatus;
-	// std::string        m_text;
-	// std::string        m_tempText;
-	// std::string        m_reflector;
-	// std::string        m_tempReflector;
-	// bool               m_hasTemporary;
 	CTimer             m_timer;
 	CAMBEData**        m_data;
 	unsigned int       m_in;
@@ -123,8 +115,6 @@ private:
 	std::chrono::high_resolution_clock::time_point m_time;
 
 	bool lookup(unsigned int id, const std::string& name, const in_addr& destination);
-	// void spellReflector(unsigned int id, const std::string& reflector);
-	// void sendStatus(LINK_STATUS status, const std::string& reflector, const std::string& text);
 
 	void sendAck(ACK_TYPE ackType, const std::string& groupeName, const std::string& user, const std::string& repeater, const std::string& gateway, const in_addr& destination);
 	void spellGroup(unsigned int id, const std::string& groupName, const in_addr& destination);

@@ -1064,7 +1064,7 @@ void CGroupHandler::sendAck(const CUserData &user, ACK_TYPE ackType)
 		m_audioUnit = new CAudioUnit(m_g2Handler);
 	}
 	m_audioUnit->setAck(ackType, m_groupCallsign, user.getUser(), user.getRepeater(), user.getGateway(), user.getAddress());
-	m_audioUnit->sendStatus();
+	m_audioUnit->sendAck();
 	// unsigned int id = CHeaderData::createId();
 
 	// CHeaderData header(m_groupCallsign, "    ", user.getUser(), user.getGateway(), user.getRepeater());
