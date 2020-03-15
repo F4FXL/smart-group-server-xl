@@ -44,6 +44,8 @@ public:
 	virtual void setRemote(bool enabled, const std::string& password, unsigned int port);
 	virtual void setIRC(CIRCDDB* irc);
 
+	virtual void setLanguage(bool audioEnabled, TEXT_LANG lang);
+
 	virtual void run();
 	virtual void kill();
 
@@ -52,6 +54,7 @@ private:
 	unsigned int m_countDCS;
 	bool		m_killed;
 	bool		m_stopped;
+	bool		m_audioEnabled;
 	std::string	m_callsign;
 	std::string	m_address;
 

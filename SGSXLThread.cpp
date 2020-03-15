@@ -44,6 +44,7 @@ m_countDExtra(countDExtra),
 m_countDCS(countDCS),
 m_killed(false),
 m_stopped(true),
+m_audioEnabled(false),
 m_callsign(),
 m_address(),
 m_g2Handler(NULL),
@@ -178,6 +179,7 @@ void CSGSXLThread::run()
 		m_remote->close();
 		delete m_remote;
 	}
+
 }
 
 void CSGSXLThread::kill()
@@ -208,6 +210,12 @@ void CSGSXLThread::setIRC(CIRCDDB* irc)
 	assert(irc != NULL);
 
 	m_irc = irc;
+}
+
+void CSGSXLThread::setLanguage(bool audioEnabled, TEXT_LANG lang)
+{
+	m_audioEnabled = audioEnabled;
+	CAudioUnit::setLanguage(lang);
 }
 
 void CSGSXLThread::setRemote(bool enabled, const std::string& password, unsigned int port)

@@ -96,9 +96,13 @@ bool CSGSXLApp::createThread()
 
 	std::string CallSign, address;
 	config.getGateway(CallSign, address);
-
 	CallSign.resize(7, ' ');
 	CallSign.push_back('G');
+
+	bool audioEnabled;
+	TEXT_LANG audioLang;
+	config.getAudio(audioEnabled, audioLang);
+	m_thread->setLanguage(audioEnabled, audioLang);
 
 	printf("Gateway callsign set to %s, local address set to %s\n", CallSign.c_str(), address.c_str());
 
