@@ -56,7 +56,7 @@ public:
 
 	void getRemote(bool &enabled, std::string &password, unsigned int &port) const;
 
-	void getAudio(bool & enabled, std::string &audioDir) const;
+	void getAudio(bool & enabled, TEXT_LANG & lang) const;
 
 	unsigned int getModCount();
 	unsigned int getLinkCount(const char *type);
@@ -68,6 +68,7 @@ private:
 	bool get_value(const Config &cfg, const std::string &path, int &value, int min, int max, int default_value);
 	bool get_value(const Config &cfg, const std::string &path, bool &value, bool default_value);
 	bool get_value(const Config &cfg, const std::string &path, std::string &value, int min, int max, const std::string &default_value);
+	bool get_value(const Config &cfg, const std::string &path, TEXT_LANG &lang, TEXT_LANG defaultValue);
 
 	std::string m_fileName;
 	std::string m_callsign;
@@ -80,7 +81,7 @@ private:
 	unsigned int m_remotePort;
 
 	bool m_audioEnabled;
-	std::string m_audioDirectory;
+	TEXT_LANG m_audioLanguage;
 
 	bool m_hasErrors;
 };

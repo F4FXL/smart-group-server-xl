@@ -224,15 +224,10 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 
 	//audio
 	get_value(cfg, "audio.enabled", m_audioEnabled, true);
-	get_value(cfg, "audio.directory", m_audioDirectory, 0, 2000, "");
-	std::string audioDirectory = std::string(DATA_DIR) + "/" + m_audioDirectory;
+	get_value(cfg, "audio.language", m_audioLanguage, TL_ENGLISH_UK);
 
-	if(m_audioEnabled && !std::filesystem::exists(audioDirectory)) {
-		m_audioEnabled = false;
-		printf("Audio directory: %s does not exist\n", audioDirectory.c_str());
-	}
 	if(m_audioEnabled) {
-		printf("Audio enabled, auudio directory : %s\n", audioDirectory.c_str());
+		printf("Audio enabled\n");
 	} else {
 		printf("Audio disabled\n");
 	}
@@ -270,6 +265,12 @@ unsigned int CSGSXLConfig::getLinkCount(const char *type)
 	return count;
 }
 
+void CSGSXLConfig::getAudio(bool & enabled, TEXT_LANG & lang) const
+{
+	enabled = m_audioEnabled;
+	lang = m_audioLanguage;
+}
+
 bool CSGSXLConfig::hasErrors()
 {
 	return m_hasErrors;
@@ -282,6 +283,56 @@ bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, int &va
 			value = default_value;
 	} else
 		value = default_value;
+	return true;
+}
+
+bool CSGSXLConfig::get_value(const Config &cfg, const std::string &path, TEXT_LANG& lang, TEXT_LANG defaultValue)
+{
+	lang = defaultValue;
+	std::string value;
+	if(cfg.lookupValue(path, value)) {
+		if(value == "de_DE")
+		{
+			lang = TL_DEUTSCH;
+		}
+		else if(value == "dk_DK")
+		{
+			lang = TL_DANSK;
+		}
+		else if(value == "it_IT")
+		{
+			lang = TL_ITALIANO;
+		}
+		else if(value == "fr_FR")
+		{
+			lang = TL_FRANCAIS;
+		}
+		else if(value == "es_ES")
+		{
+			lang = TL_ESPANOL;
+		}
+		else if(value == "se_SE")
+		{
+			lang = TL_SVENSKA;
+		}
+		else if(value == "pl_PL")
+		{
+			lang = TL_POLSKI;
+		}
+		else if(value == "en_US")
+		{
+			lang = TL_ENGLISH_US;
+		}
+		else if(value == "en_GB")
+		{
+			lang = TL_ENGLISH_UK;
+		}
+		else if(value == "no_NO")
+		{
+		 	lang = TL_NORSK;
+		}
+	}
+
 	return true;
 }
 
