@@ -338,20 +338,15 @@ bool CAudioUnit::lookup(unsigned int id, const std::string &name, const in_addr&
 
 bool CAudioUnit::readAMBE(const std::string& name)
 {
-	std::string dir = std::getenv("HOME");
+	std::string dir = DATA_DIR;
 	std::string fileName = dir + "/" + name;
 	struct stat sbuf;
 	
 	if (stat(fileName.c_str(), &sbuf)) {
 		printf("File %s not readable\n", fileName.c_str());
-		fileName.assign(CFG_DIR);
-		fileName.append("/data/");
-		fileName += name;
-		if (stat(fileName.c_str(), &sbuf)) {
-			printf("File %s not readable\n", fileName.c_str());
-			return false;
-		}
+		return false;
 	}
+
 	unsigned int fsize = sbuf.st_size;
 
 	FILE *file = fopen(fileName.c_str(), "rb");
@@ -405,19 +400,13 @@ bool CAudioUnit::readAMBE(const std::string& name)
 
 bool CAudioUnit::readIndex(const std::string& name)
 {
-	std::string dir = std::getenv("HOME");
+	std::string dir = DATA_DIR;
 	std::string fileName = dir + "/" + name;
 	struct stat sbuf;
 	
 	if (stat(fileName.c_str(), &sbuf)) {
 		printf("File %s not readable\n", fileName.c_str());
-		fileName.assign(CFG_DIR);
-		fileName.append("/data/");
-		fileName += name;
-		if (stat(fileName.c_str(), &sbuf)) {
-			printf("File %s not readable\n", fileName.c_str());
-			return false;
-		}
+		return false;
 	}
 
 	std::ifstream file(fileName);
