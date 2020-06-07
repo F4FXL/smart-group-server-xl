@@ -130,6 +130,7 @@ IRCDDBApp::IRCDDBApp(const std::string& u_chan)
 	: d(new IRCDDBAppPrivate)
 	, m_maxTime((time_t)950000000)	//februray 2000
 {
+	m_maxTime = time(NULL) - 2592000; //Today -30 days
 	d->sendQ = NULL;
 	d->initReady = false;
 
