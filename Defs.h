@@ -57,6 +57,7 @@ enum HW_TYPE {
 };
 
 enum TEXT_LANG {
+	TL_UNDEFINED,
 	TL_ENGLISH_UK,
 	TL_DEUTSCH,
 	TL_DANSK,
