@@ -1,9 +1,9 @@
 # Copyright (c) 2017 by Thomas A. Early N7TAE
 
-# if you change these locations, make sure the sgs-xl.service file is updated!
-BINDIR=/usr/local/bin
-CFGDIR=/usr/local/etc/sgs-xl
-DATADIR=/usr/local/sgs-xl/data
+# if you change these locations, make sure paths en with /
+BINDIR=/usr/local/bin/
+CFGDIR=/usr/local/etc/sgs-xl/
+DATADIR=/usr/local/sgs-xl/data/
 
 # choose this if you want debugging help
 #CPPFLAGS=-g -ggdb -W -Wall -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
@@ -42,7 +42,7 @@ install : newhostfiles sgs-xl
 	cp -f sgs-xl.cfg $(CFGDIR)
 	cp -f sgs-xl $(BINDIR)
 	cp -f sgs-xl.service /lib/systemd/system
-	sed -i "s|REPLACEME|/usr/sbin/sgs-xl /etc/sgs-xl/sgs-xl.cfg|g" /lib/systemd/system/sgs-xl.service
+	sed -i "s|REPLACEME|$(BINDIR)sgs-xl $(CFGDIR)sgs-xl.cfg|g" /lib/systemd/system/sgs-xl.service
 	systemctl enable sgs-xl.service
 	systemctl daemon-reload
 	systemctl start sgs-xl.service
