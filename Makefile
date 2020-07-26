@@ -1,4 +1,5 @@
 # Copyright (c) 2017 by Thomas A. Early N7TAE
+# Copyright (c) 2019-2020 by Geoffrey Merck F4FXL - KC3FRA
 
 # if you change these locations, make sure paths en with /
 BINDIR=/usr/local/bin/
@@ -6,7 +7,7 @@ CFGDIR=/usr/local/etc/sgs-xl/
 DATADIR=/usr/local/sgs-xl/data/
 
 # choose this if you want debugging help
-#CPPFLAGS=-g -ggdb -W -Wall -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
+# CPPFLAGS=-g -ggdb -W -Wall -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
 # or, you can choose this for a much smaller executable without debugging help
 CPPFLAGS= -W -Wall -O3 -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
 
