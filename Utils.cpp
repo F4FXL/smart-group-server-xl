@@ -413,6 +413,9 @@ time_t CUtils::parseTime(const std::string str)
 {
 	struct tm stm;
 	strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &stm);
-	return mktime(&stm);
+	time_t t = mktime(&stm) + stm.tm_gmtoff;
+	if(!stm.tm_isdst)
+		t += 3600;
+	return t;
 }
 
