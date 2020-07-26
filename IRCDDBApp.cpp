@@ -130,7 +130,6 @@ IRCDDBApp::IRCDDBApp(const std::string& u_chan)
 	: d(new IRCDDBAppPrivate)
 	, m_maxTime((time_t)950000000)	//februray 2000
 {
-	m_maxTime = time(NULL) - 2592000; //Today -30 days
 	d->sendQ = NULL;
 	d->initReady = false;
 
@@ -689,6 +688,7 @@ void IRCDDBApp::doUpdate(std::string& msg)
 {
 	int tableID = 0;
 	std::vector<std::string> tkz = CUtils::stringTokenizer(msg);
+
 	if (tkz.empty())
 		return;  // no text in message
 
@@ -867,7 +867,7 @@ IRCMessageQueue *IRCDDBApp::getSendQ()
 std::string IRCDDBApp::getLastEntryTime(int tableID)
 {
 	if (1 == tableID) {
-		struct tm *ptm = gmtime(&m_maxTime);
+		struct tm *ptm = std::gmtime(&m_maxTime);
 		char tstr[80];
 		strftime(tstr, 80, "%Y-%m-%d %H:%M:%S", ptm);
 		std::string max = tstr;
