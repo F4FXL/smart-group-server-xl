@@ -1,14 +1,14 @@
 # Copyright (c) 2017 by Thomas A. Early N7TAE
 
 # if you change these locations, make sure the sgs-xl.service file is updated!
-BINDIR=/usr/sbin
-CFGDIR=/etc/sgs-xl
-DATADIR=/etc/sgs-xl/data
+BINDIR=/usr/local/bin
+CFGDIR=/usr/local/etc/sgs-xl
+DATADIR=/usr/local/sgs-xl/data
 
 # choose this if you want debugging help
-CPPFLAGS=-g -ggdb -W -Wall -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
+#CPPFLAGS=-g -ggdb -W -Wall -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
 # or, you can choose this for a much smaller executable without debugging help
-#CPPFLAGS= -W -Wall -O3 -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
+CPPFLAGS= -W -Wall -O3 -std=c++17 -DCFG_DIR=\"$(CFGDIR)\" -DDATA_DIR=\"$(DATADIR)\"
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
