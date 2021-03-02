@@ -26,7 +26,7 @@ sgs-xl.crt sgs-xl.key :
 
 .PHONY: clean
 clean:
-	$(RM) GitVersion.h $(OBJS) $(DEPS) sgs-xl
+	$(RM) GitVersion.h $(OBJS) $(DEPS) sgs-xl sgs-xl.crt sgs-xl.key
 
 -include $(DEPS)
 
