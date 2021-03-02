@@ -1,6 +1,6 @@
 /*
  *   Copyright (C) 2011 by Jonathan Naylor G4KLX
- *   Copyright (c) 2017,2018 by Thomas A. Early N7TAE
+ *   Copyright (c) 2017,2018, 2020 by Thomas A. Early N7TAE
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,8 +19,7 @@
 
 #include "RemoteGroup.h"
 
-CRemoteGroup::CRemoteGroup(const std::string& callsign, const std::string& logoff, const std::string &repeater, const std::string &infoText,
-											const std::string &linkReflector, LINK_STATUS linkStatus, unsigned int userTimeout) :
+CRemoteGroup::CRemoteGroup(const std::string &callsign, const std::string &logoff, const std::string &repeater, const std::string &infoText, const std::string &linkReflector, LINK_STATUS linkStatus, unsigned int userTimeout) :
 m_callsign(callsign),
 m_logoff(logoff),
 m_repeater(repeater),
@@ -30,8 +29,8 @@ m_linkStatus(linkStatus),
 m_userTimeout(userTimeout),
 m_users()
 {
-	if (m_logoff.compare("        "))
-		m_logoff.clear();
+	if (logoff.compare("        "))
+		logoff.empty();
 }
 
 CRemoteGroup::~CRemoteGroup()

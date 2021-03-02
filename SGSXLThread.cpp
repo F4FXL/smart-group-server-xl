@@ -115,9 +115,9 @@ void CSGSXLThread::run()
 		CGroupHandler::link();
 
 	if (m_remoteEnabled && m_remotePassword.size() && m_remotePort > 0U) {
-		m_remote = new CRemoteHandler(m_remotePassword, m_remotePort);
-		bool res = m_remote->open();
-		if (!res) {
+		m_remote = new CRemoteHandler();
+		bool res = m_remote->open(m_remotePassword, m_remotePort, false);
+		if (res) {
 			delete m_remote;
 			m_remote = NULL;
 		}
@@ -176,7 +176,6 @@ void CSGSXLThread::run()
 	delete m_irc;
 
 	if (m_remote != NULL) {
-		m_remote->close();
 		delete m_remote;
 	}
 

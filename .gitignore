@@ -35,3 +35,7 @@ sgs-xl
 #Generated source files
 /GitVersion.h
 /sgs-xl.cfg
+
+#certs
+sgs-xl.crt
+sgs-xl.key

@@ -39,7 +39,7 @@ git clone git://github.com/F4FXL/smart-group-server-xl.git
 ```
 Install the only needed development library:
 ```
-sudo apt-get install build-essential libconfig++-dev
+sudo apt-get install build-essential libconfig++-dev openssl libssl-dev
 ```
 Change to the smart-group-server directory and type `make`. This should make the executable, `sgs-xl` without errors or warnings. By default, you will have a group server that can link groups to X-Reflectors or DCS-Reflectors. Of course you can declare an unlinked channel by simply not defining a *reflector* parameter for that channel.
 
