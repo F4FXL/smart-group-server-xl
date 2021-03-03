@@ -29,7 +29,7 @@ m_linkStatus(linkStatus),
 m_userTimeout(userTimeout),
 m_users()
 {
-	if (m_logoff.compare("        "))
+	if (m_logoff.compare("        ") == 0)
 		m_logoff.clear();
 }
 
