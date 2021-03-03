@@ -58,6 +58,11 @@ sudo make install && sudo journalctl -u sgs-xl.service -f
 This will allow you to view the smart-group-server log file while it's booting up. When you are satisfied it's running okay you can Control-C to end the journalctl session. To uninstall it, type `sudo make uninstall` and `sudo make removehostfiles`. This will stop the server and remove all files. You can then delete the build directory to remove every trace of the smart-group-server.
 
 ## Whatsnew
+### v1.1
+#### 2021-03-03
+Removed specific SGS IRC messages
+Is now compatible with N7TAE's remote https://github.com/n7tae/sgs-remote
+
 ### v1.0
 #### 2020-03-10
 Groups can share same logoff. Thus users will be logged off at once from every group sharing the same logoff
