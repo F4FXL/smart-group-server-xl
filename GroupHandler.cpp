@@ -974,8 +974,6 @@ void CGroupHandler::updateReflectorInfo()
 	info.resize(20, '_');
 	CUtils::ReplaceChar(info, ' ', '_');
 	parms.push_back(info);
-
-	m_irc->sendSGSInfo(subcommand, parms);
 }
 
 void CGroupHandler::logUser(LOGUSER lu, const std::string channel, const std::string user)
@@ -988,7 +986,6 @@ void CGroupHandler::logUser(LOGUSER lu, const std::string channel, const std::st
 	std::vector<std::string> parms;
 	parms.push_back(chn);
 	parms.push_back(usr);
-	m_irc->sendSGSInfo(cmd, parms);
 }
 
 void CGroupHandler::sendToRepeaters(CHeaderData& header) const
