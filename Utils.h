@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <string>
 #include <vector>
+#include <ctime>
 
 enum TRISTATE {
 	STATE_FALSE,
