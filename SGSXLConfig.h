@@ -40,7 +40,6 @@ struct SircDDB {
 	std::string hostname;
 	std::string username;
 	std::string password;
-	bool isQuadNet;
 };
 
 class CSGSXLConfig {
@@ -50,7 +49,7 @@ public:
 
 	void getGateway(std::string &callsign, std::string &address) const;
 
-	void getIrcDDB(unsigned int ircddb, std::string &hostname, std::string &username, std::string &password, bool &isQuadNet) const;
+	void getIrcDDB(unsigned int ircddb, std::string &hostname, std::string &username, std::string &password) const;
 
 	void getGroup(unsigned int mod, std::string &band, std::string &callsign, std::string &logoff, std::string &info, std::string &permanent, unsigned int &userTimeout, CALLSIGN_SWITCH &callsignSwitch, bool &txMsgSwitch, std::string &reflector) const;
 

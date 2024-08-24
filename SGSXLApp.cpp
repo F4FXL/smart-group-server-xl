@@ -109,10 +109,9 @@ bool CSGSXLApp::createThread()
 	CIRCDDB_Array clients;
 	for(unsigned int i=0; i < config.getIrcDDBCount(); i++) {
 		std::string hostname, username, password;
-		bool isQuadNet;
-		config.getIrcDDB(i, hostname, username, password, isQuadNet);
-		std::cout << "ircDDB " << i + 1 << " set to " << hostname << " username set to " << username << " QuadNet " << isQuadNet << std::endl;
-		CIRCDDB *ircDDB = new CIRCDDBClient(hostname, 9007U, username, password, std::string("linux_SmartGroupServerXL-") + VERSION, address, isQuadNet);
+		config.getIrcDDB(i, hostname, username, password);
+		std::cout << "ircDDB " << i + 1 << " set to " << hostname << " username set to " << username << std::endl;
+		CIRCDDB *ircDDB = new CIRCDDBClient(hostname, 9007U, username, password, std::string("linux_SmartGroupServerXL-") + VERSION, address);
 		clients.push_back(ircDDB);
 	}
 	
