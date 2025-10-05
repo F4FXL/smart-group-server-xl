@@ -39,7 +39,7 @@ git clone git://github.com/F4FXL/smart-group-server-xl.git
 ```
 Install the only needed development library:
 ```
-sudo apt-get install build-essential libconfig++-dev
+sudo apt-get install build-essential libconfig++-dev openssl libssl-dev
 ```
 Change to the smart-group-server directory and type `make`. This should make the executable, `sgs-xl` without errors or warnings. By default, you will have a group server that can link groups to X-Reflectors or DCS-Reflectors. Of course you can declare an unlinked channel by simply not defining a *reflector* parameter for that channel.
 
@@ -58,6 +58,11 @@ sudo make install && sudo journalctl -u sgs-xl.service -f
 This will allow you to view the smart-group-server log file while it's booting up. When you are satisfied it's running okay you can Control-C to end the journalctl session. To uninstall it, type `sudo make uninstall` and `sudo make removehostfiles`. This will stop the server and remove all files. You can then delete the build directory to remove every trace of the smart-group-server.
 
 ## Whatsnew
+### v1.1
+#### 2021-03-03
+Removed specific SGS IRC messages
+Is now compatible with N7TAE's remote https://github.com/n7tae/sgs-remote
+
 ### v1.0
 #### 2020-03-10
 Groups can share same logoff. Thus users will be logged off at once from every group sharing the same logoff

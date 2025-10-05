@@ -85,7 +85,6 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 			continue;
 		}
 
-		ircddb->isQuadNet = ircddb->hostname.find("openquad.net") != std::string::npos;
 		this->m_ircDDB.push_back(ircddb);
 		std::cout << "IRCDDB: host=" << ircddb->hostname << " user=" << ircddb->username << " password=" << ircddb->password << "\n";
 	}
@@ -95,7 +94,6 @@ CSGSXLConfig::CSGSXLConfig(const std::string &pathname)
 		ircddb->hostname  = "rr.openquad.net";
 		ircddb->password  = "";
 		ircddb->username  = m_callsign;
-		ircddb->isQuadNet = true;
 		this->m_ircDDB.push_back(ircddb);
 		std::cout << "No ircDDB networks configure'd, defaulting to IRCDDB: host=" << ircddb->hostname << " user=" << ircddb->username << " password=" << ircddb->password << "\n";
 	}
@@ -362,12 +360,11 @@ void CSGSXLConfig::getGateway(std::string& callsign, std::string& address) const
 	address  = m_address;
 }
 
-void CSGSXLConfig::getIrcDDB(unsigned int ircddb, std::string& hostname, std::string& username, std::string& password, bool &isQuadNet) const
+void CSGSXLConfig::getIrcDDB(unsigned int ircddb, std::string& hostname, std::string& username, std::string& password) const
 {
 	hostname  = m_ircDDB[ircddb]->hostname;
 	username  = m_ircDDB[ircddb]->username;
 	password  = m_ircDDB[ircddb]->password;
-	isQuadNet = m_ircDDB[ircddb]->isQuadNet;
 }
 
 void CSGSXLConfig::getGroup(unsigned int mod, std::string& band, std::string& callsign, std::string& logoff, std::string& info, std::string& permanent, unsigned int& userTimeout, CALLSIGN_SWITCH& callsignSwitch, bool& txMsgSwitch, std::string& reflector) const

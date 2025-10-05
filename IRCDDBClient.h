@@ -33,7 +33,7 @@ struct CIRCDDBPrivate;
 class CIRCDDBClient : public CIRCDDB{
 public:
 	CIRCDDBClient(const std::string& hostName, unsigned int port, const std::string& callsign, const std::string& password, const std::string& versionInfo,
-		const std::string& localAddr = std::string(""), bool isQuadNet = false);
+		const std::string& localAddr = std::string(""));
 	~CIRCDDBClient();
 
 	// A false return implies a network error, or unable to log in
@@ -106,9 +106,6 @@ public:
 	// Send query for a user, a false return implies a network error
 	bool findUser(const std::string& userCallsign);
 
-	// Support for the Smart Group Server
-	void sendSGSInfo(const std::string subcommand, const std::vector<std::string> parms);
-
 	// The following functions are for processing received messages
 	
 	// Get the waiting message type
@@ -132,7 +129,6 @@ public:
 
 private:
 	struct CIRCDDBClientPrivate * const d;
-	bool m_isQuadNet;
 };
 
 

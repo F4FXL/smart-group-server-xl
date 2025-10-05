@@ -111,9 +111,6 @@ public:
 	// Send query for a user, a false return implies a network error
 	virtual bool findUser(const std::string& userCallsign) = 0;
 
-	// Support for the Smart Group Server
-	virtual void sendSGSInfo(const std::string subcommand, const std::vector<std::string> parms) = 0;
-
 	// The following functions are for processing received messages
 
 	// Get the waiting message type
